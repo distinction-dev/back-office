@@ -35,7 +35,7 @@ const serverlessConfiguration: ServerlessFrameworkConfiguration = {
   provider: {
     name: "aws",
     runtime: "nodejs16.x",
-    region: "us-west-1",
+    region: "ap-south-1",
     stage: env.STAGE,
     environment: {
       ...env,
