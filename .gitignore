@@ -9,3 +9,8 @@ jspm_packages
 .esbuild
 .DS_Store
 dist
+buckets
+tmp
+.idea
+.envrc
+.env
