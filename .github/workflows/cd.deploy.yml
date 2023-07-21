@@ -1,4 +1,4 @@
-name: CD:- Cloudformation
+name: CD:- Deploy
 
 on:
   workflow_call:
@@ -28,11 +28,13 @@ jobs:
           node-version: 16
       - name: Install serverless dependency
         run: yarn install --frozen-lockfile
-      - name: Package Functions
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v3.x
+      - name: Package Stack
         run: npx serverless package
         env:
           STAGE: ${{ env.GITHUB_REF_SLUG }}
-      - name: Deploy Functions - dev account
+      - name: Deploy Stack
         run: npx serverless deploy --package .serverless
         env:
           STAGE: ${{ env.GITHUB_REF_SLUG }}
