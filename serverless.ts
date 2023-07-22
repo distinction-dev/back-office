@@ -1,6 +1,7 @@
 import { functions } from "@functions/index";
 import env from "@lib/env";
 import { ServerlessFrameworkConfiguration } from "serverless-schema";
+import { BackOfficeResources } from "src/resources";
 
 const serverlessConfiguration: ServerlessFrameworkConfiguration = {
   service: env.SERVICE_NAME,
@@ -17,6 +18,13 @@ const serverlessConfiguration: ServerlessFrameworkConfiguration = {
       automatic: true,
       number: 3,
     },
+    cloudfrontInvalidate: [
+      {
+        distributionIdKey: "CloudFrontDistributionId",
+        autoInvalidate: true,
+        items: ["/*"],
+      },
+    ],
     /* Enable this */
     // s3: {
     //   host: "localhost",
@@ -27,6 +35,7 @@ const serverlessConfiguration: ServerlessFrameworkConfiguration = {
   plugins: [
     "serverless-esbuild",
     "serverless-prune-plugin",
+    "serverless-cloudfront-invalidate",
     /* Enable this */
     // "serverless-s3-local",
     /* In Local */
@@ -45,11 +54,47 @@ const serverlessConfiguration: ServerlessFrameworkConfiguration = {
       name: "back-office-deployment-bucket",
       maxPreviousDeploymentArtifacts: 1,
     },
+    apiGateway: {
+      minimumCompressionSize: 1024,
+      shouldStartNameWithService: true,
+      metrics: false,
+      restApiId:
+        "${self:resources.Outputs.BackOfficeApiGatewayRestApiId.Value}",
+      restApiRootResourceId:
+        "${self:resources.Outputs.BackOfficeApiGatewayRootResourceId.Value}",
+    },
     iamRoleStatements: [],
   },
-  functions,
   package: {
     individually: true,
+  },
+  functions,
+  resources: {
+    Resources: BackOfficeResources,
+    Outputs: {
+      BackOfficeApiGatewayRestApiId: {
+        Value: {
+          "Fn::GetAtt": ["BackOfficeApiGateway", "RestApiId"],
+        },
+        Export: {
+          Name: `BackOfficeApiGatewayRestApiId-${env.STAGE}`,
+        },
+      },
+      BackOfficeApiGatewayRootResourceId: {
+        Value: {
+          "Fn::GetAtt": ["BackOfficeApiGateway", "RootResourceId"],
+        },
+        Export: {
+          Name: `BackOfficeApiGatewayRootResourceId-${env.STAGE}`,
+        },
+      },
+      CloudFrontDistributionId: {
+        Description: "CloudFrontDistribution distribution id.",
+        Value: {
+          Ref: "CloudFrontDistribution",
+        },
+      },
+    },
   },
 };
 
