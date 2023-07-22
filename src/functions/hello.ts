@@ -1,5 +1,13 @@
 import { AwsFunction } from "serverless-schema";
 
 export const helloFunction: AwsFunction = {
-  handler: "src/functions/hello.handler",
+  handler: "src/handlers/hello.handler",
+  events: [
+    {
+      http: {
+        method: "GET",
+        path: "api/hello",
+      },
+    },
+  ],
 };
