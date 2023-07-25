@@ -37,6 +37,7 @@ export const handler: APIGatewayProxyHandler = async (
       ),
     });
   } catch (error) {
+    console.error(error);
     return response(400, {
       message: error.message,
     });

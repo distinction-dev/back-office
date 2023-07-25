@@ -24,6 +24,7 @@ export const handler: APIGatewayProxyHandler = async (
       names,
     });
   } catch (error) {
+    console.error(error);
     return response(400, {
       message: error.message,
     });
