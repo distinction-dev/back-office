@@ -53,7 +53,7 @@ export const getUserNames = async (csvFileBuffer: Buffer) => {
 export const writeFinalCSV = async (
   csvFileBuffer: Buffer | string,
   userJSONData: any
-) => {
+): Promise<string> => {
   const filePath = await writeFilePromise(
     `${constant.TEMP_PATH}/file.csv`,
     csvFileBuffer

@@ -1,5 +1,6 @@
 import env from "@lib/env";
 import { Endpoint, S3 } from "aws-sdk";
+import { GetObjectOutput } from "aws-sdk/clients/s3";
 
 const s3 = new S3({
   apiVersion: "latest",
@@ -35,7 +36,10 @@ export const uploadFile = async (
     .promise();
 };
 
-export const getFile = async (bucketName: string, key: string) => {
+export const getFile = async (
+  bucketName: string,
+  key: string
+): Promise<GetObjectOutput> => {
   return await s3
     .getObject({
       Bucket: bucketName,

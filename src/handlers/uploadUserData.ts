@@ -9,7 +9,12 @@ export const handler: APIGatewayProxyHandler = async (
   event: APIGatewayEvent
 ): Promise<any> => {
   try {
-    const requestBody = event.body;
+    let requestBody: any;
+    if (typeof event.body === "string") {
+      requestBody = JSON.parse(event.body);
+    } else {
+      requestBody = event.body;
+    }
 
     const inputFile = await getFile(
       BucketNames.BackOfficeTimeSheetBucket,
@@ -17,7 +22,7 @@ export const handler: APIGatewayProxyHandler = async (
     );
 
     const outFilePath = await writeFinalCSV(
-      inputFile.Body,
+      inputFile.Body as Buffer,
       JSON.parse(requestBody)
     );
 
