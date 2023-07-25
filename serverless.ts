@@ -73,7 +73,10 @@ const serverlessConfiguration: ServerlessFrameworkConfiguration = {
           "s3:DeleteObject",
           "s3:CopyObject",
         ],
-        Resource: ["${self:resources.Outputs.BackOfficeTimeSheetBucket.Value}"],
+        Resource: [
+          // eslint-disable-next-line max-len
+          "${self:resources.Outputs.BackOfficeTimeSheetBucketResourceArn.Value}",
+        ],
       },
     ],
   },
@@ -106,6 +109,17 @@ const serverlessConfiguration: ServerlessFrameworkConfiguration = {
         },
         Export: {
           Name: `BackOfficeTimeSheetBucket-${env.STAGE}`,
+        },
+      },
+      BackOfficeTimeSheetBucketResourceArn: {
+        Value: {
+          "Fn::Join": [
+            "",
+            [{ "Fn::GetAtt": ["BackOfficeTimeSheetBucket", "Arn"] }, "/*"],
+          ],
+        },
+        Export: {
+          Name: `BackOfficeTimeSheetBucketResourceArn-${env.STAGE}`,
         },
       },
       // CloudFrontDistributionId: {
