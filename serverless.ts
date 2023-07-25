@@ -18,13 +18,13 @@ const serverlessConfiguration: ServerlessFrameworkConfiguration = {
       automatic: true,
       number: 3,
     },
-    cloudfrontInvalidate: [
-      {
-        distributionIdKey: "CloudFrontDistributionId",
-        autoInvalidate: true,
-        items: ["/*"],
-      },
-    ],
+    // cloudfrontInvalidate: [
+    //   {
+    //     distributionIdKey: "CloudFrontDistributionId",
+    //     autoInvalidate: true,
+    //     items: ["/*"],
+    //   },
+    // ],
     /* Enable this */
     // s3: {
     //   host: "localhost",
@@ -35,7 +35,7 @@ const serverlessConfiguration: ServerlessFrameworkConfiguration = {
   plugins: [
     "serverless-esbuild",
     "serverless-prune-plugin",
-    "serverless-cloudfront-invalidate",
+    // "serverless-cloudfront-invalidate",
     /* Enable this */
     // "serverless-s3-local",
     /* In Local */
@@ -88,12 +88,12 @@ const serverlessConfiguration: ServerlessFrameworkConfiguration = {
           Name: `BackOfficeApiGatewayRootResourceId-${env.STAGE}`,
         },
       },
-      CloudFrontDistributionId: {
-        Description: "CloudFrontDistribution distribution id.",
-        Value: {
-          Ref: "CloudFrontDistribution",
-        },
-      },
+      // CloudFrontDistributionId: {
+      //   Description: "CloudFrontDistribution distribution id.",
+      //   Value: {
+      //     Ref: "CloudFrontDistribution",
+      //   },
+      // },
     },
   },
 };
