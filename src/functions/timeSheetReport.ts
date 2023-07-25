@@ -5,7 +5,7 @@ export const TimeSheetFunctions = {
       {
         http: {
           method: "POST",
-          path: "/uploadCSV",
+          path: "/api/uploadCSV",
         },
       },
     ],
@@ -16,7 +16,7 @@ export const TimeSheetFunctions = {
       {
         http: {
           method: "POST",
-          path: "/uploadUserData",
+          path: "/api/uploadUserData",
         },
       },
     ],

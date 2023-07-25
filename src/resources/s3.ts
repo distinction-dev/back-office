@@ -1,7 +1,7 @@
 import { AWSS3Bucket } from "serverless-schema";
 import { BucketNames } from "./constants";
 
-export const BackOfficeTimesheetBucket: AWSS3Bucket = {
+export const BackOfficeTimeSheetBucket: AWSS3Bucket = {
   Type: "AWS::S3::Bucket",
   Properties: {
     BucketName: BucketNames.BackOfficeTimeSheetBucket,

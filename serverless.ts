@@ -63,7 +63,19 @@ const serverlessConfiguration: ServerlessFrameworkConfiguration = {
       restApiRootResourceId:
         "${self:resources.Outputs.BackOfficeApiGatewayRootResourceId.Value}",
     },
-    iamRoleStatements: [],
+    iamRoleStatements: [
+      {
+        Effect: "Allow",
+        Action: [
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:ListObject",
+          "s3:DeleteObject",
+          "s3:CopyObject",
+        ],
+        Resource: ["${self:resources.Outputs.BackOfficeTimeSheetBucket.Value}"],
+      },
+    ],
   },
   package: {
     individually: true,
@@ -86,6 +98,14 @@ const serverlessConfiguration: ServerlessFrameworkConfiguration = {
         },
         Export: {
           Name: `BackOfficeApiGatewayRootResourceId-${env.STAGE}`,
+        },
+      },
+      BackOfficeTimeSheetBucket: {
+        Value: {
+          "Fn::GetAtt": ["BackOfficeTimeSheetBucket", "Arn"],
+        },
+        Export: {
+          Name: `BackOfficeTimeSheetBucket-${env.STAGE}`,
         },
       },
       // CloudFrontDistributionId: {
