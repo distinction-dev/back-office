@@ -6,6 +6,7 @@ export const TimeSheetFunctions = {
         http: {
           method: "POST",
           path: "/api/uploadCSV",
+          cors: true,
         },
       },
     ],
@@ -17,6 +18,7 @@ export const TimeSheetFunctions = {
         http: {
           method: "POST",
           path: "/api/uploadUserData",
+          cors: true,
         },
       },
     ],
