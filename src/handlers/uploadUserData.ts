@@ -9,12 +9,12 @@ export const handler: APIGatewayProxyHandler = async (
   event: APIGatewayEvent
 ): Promise<any> => {
   try {
-    let requestBody: any;
-    if (typeof event.body === "string") {
-      requestBody = JSON.parse(event.body);
-    } else {
-      requestBody = event.body;
-    }
+    const requestBody: any = event.body;
+    // if (typeof event.body === "string") {
+    //   requestBody = JSON.parse(event.body);
+    // } else {
+    //   requestBody = event.body;
+    // }
 
     const inputFile = await getFile(
       BucketNames.BackOfficeTimeSheetBucket,
