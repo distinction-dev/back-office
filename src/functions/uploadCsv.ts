@@ -8,18 +8,24 @@ import { APIGatewayEvent, APIGatewayProxyHandler } from "aws-lambda";
 export const handler: APIGatewayProxyHandler = async (
   event: APIGatewayEvent
 ): Promise<any> => {
-  const result = multipart.parse(event, true);
+  try {
+    const result = multipart.parse(event, true);
 
-  const names = await getUserNames(result.file.content);
+    const names = await getUserNames(result.file.content);
 
-  await uploadFile(
-    BucketNames.BackOfficeTimeSheetBucket,
-    "upload/file.csv",
-    result.file.content
-  );
+    await uploadFile(
+      BucketNames.BackOfficeTimeSheetBucket,
+      "upload/file.csv",
+      result.file.content
+    );
 
-  return response(200, {
-    message: "Inside upload csv",
-    names,
-  });
+    return response(200, {
+      message: "Inside upload csv",
+      names,
+    });
+  } catch (error) {
+    return response(400, {
+      message: error.message,
+    });
+  }
 };
