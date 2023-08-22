@@ -18,6 +18,23 @@ const serverlessConfiguration: ServerlessFrameworkConfiguration = {
       automatic: true,
       number: 3,
     },
+    notion: {
+      NOTION_AUTH_TOKEN: {
+        prod: "${ssm:/back-office/notion/authToken/prod}",
+        stage: "${ssm:/back-office/notion/authToken/stage}",
+        local: "",
+      },
+      NOTION_DB_KIMAI_TOKENS: {
+        prod: "${ssm:/back-office/notion/kimaiDb/prod}",
+        stage: "${ssm:/back-office/notion/kimaiDb/stage}",
+        local: "",
+      },
+      NOTION_DB_PRODUCTIVITY_TRACKER: {
+        prod: "${ssm:/back-office/notion/prodTrackerDb/prod}",
+        stage: "${ssm:/back-office/notion/prodTrackerDb/stage}",
+        local: "",
+      },
+    },
     // cloudfrontInvalidate: [
     //   {
     //     distributionIdKey: "CloudFrontDistributionId",
