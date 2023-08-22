@@ -1,12 +1,23 @@
-export const kimaiEntryFunctions = {
-    kimaiScheduler: {
-        handler: "src/handlers/kimaiScheduler.handler",
-        timeout: 30,
-        memorySize: 256,
-        events: [
-                {
-                    schedule: "cron(0 0 ? * WED,SUN *)", // Runs at 12:00 AM (midnight) every Wednesday and Sunday
-                },
-            ],
-        },
+/* eslint-disable max-len */
+import { AwsFunctions } from "serverless-schema";
+
+export const kimaiEntryFunctions: AwsFunctions = {
+  kimaiScheduler: {
+    handler: "src/handlers/kimaiScheduler.syncNotionDataToKimai",
+    timeout: 500,
+    memorySize: 512,
+    events: [
+      {
+        schedule: "cron(0 0 ? * WED,SUN *)",
+      },
+    ],
+    environment: {
+      NOTION_AUTH_TOKEN:
+        "${self:custom.notion.NOTION_AUTH_TOKEN.${self:custom.stage}}",
+      NOTION_DB_KIMAI_TOKENS:
+        "${self:custom.notion.NOTION_DB_KIMAI_TOKENS.${self:custom.stage}}",
+      NOTION_DB_PRODUCTIVITY_TRACKER:
+        "${self:custom.notion.NOTION_DB_PRODUCTIVITY_TRACKER.${self:custom.stage}}",
+    },
+  },
 };
