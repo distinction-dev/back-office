@@ -6,11 +6,6 @@ export const kimaiEntryFunctions: AwsFunctions = {
     handler: "src/handlers/kimaiScheduler.syncNotionDataToKimai",
     timeout: 500,
     memorySize: 512,
-    events: [
-      {
-        schedule: "cron(0 0 ? * WED,SUN *)",
-      },
-    ],
     environment: {
       NOTION_AUTH_TOKEN:
         "${self:custom.notion.NOTION_AUTH_TOKEN.${self:custom.stage}}",

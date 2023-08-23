@@ -35,6 +35,10 @@ export const syncNotionDataToKimai = async () => {
     let results = [];
 
     for (const dev of onmoDevsKiamiData) {
+      if (!dev?.userName) {
+        console.error("Dev has not added user name", dev);
+        continue;
+      }
       const timesheetRecords = await queryDatabase(
         process.env.NOTION_DB_PRODUCTIVITY_TRACKER,
         ["Date", "Description"],
