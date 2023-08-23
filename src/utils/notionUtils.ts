@@ -28,20 +28,20 @@ export const queryDatabase = async (
       let outputObject = {};
       filterProperties.forEach((property) => {
         const cameliseKey = camelCase(property);
-        if (record.properties[property].type === "select") {
+        if (record?.properties[property]?.type === "select") {
           outputObject[cameliseKey] = record.properties[property].select.name;
-        } else if (record.properties[property].type === "rich_text") {
+        } else if (record?.properties[property]?.type === "rich_text") {
           outputObject[cameliseKey] =
             record.properties[property]?.rich_text[0]?.plain_text;
-        } else if (record.properties[property].type === "title") {
+        } else if (record?.properties[property]?.type === "title") {
           outputObject[cameliseKey] =
             record.properties[property]?.title[0]?.plain_text;
-        } else if (record.properties[property].type === "relation") {
+        } else if (record?.properties[property]?.type === "relation") {
           outputObject[cameliseKey] =
             record.properties[property]?.relation[0]?.id;
-        } else if (record.properties[property].type === "email") {
+        } else if (record?.properties[property]?.type === "email") {
           outputObject[cameliseKey] = record.properties[property]?.email;
-        } else if (record.properties[property].type === "date") {
+        } else if (record?.properties[property]?.type === "date") {
           outputObject[cameliseKey] = record.properties[property]?.date?.start;
         } else {
           outputObject[cameliseKey] = record.properties[property];
