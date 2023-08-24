@@ -1,26 +1,26 @@
-export const TimeSheetFunctions = {
-  uploadCSV: {
-    handler: "src/handlers/uploadCsv.handler",
-    events: [
-      {
-        http: {
-          method: "POST",
-          path: "/api/uploadCSV",
-          cors: true,
-        },
+import { AwsFunction } from "serverless-schema";
+
+export const timeSheetUploadCSV: AwsFunction = {
+  handler: "src/handlers/uploadCsv.handler",
+  events: [
+    {
+      http: {
+        method: "POST",
+        path: "/api/uploadCSV",
+        cors: true,
       },
-    ],
-  },
-  uploadUserData: {
-    handler: "src/handlers/uploadUserData.handler",
-    events: [
-      {
-        http: {
-          method: "POST",
-          path: "/api/uploadUserData",
-          cors: true,
-        },
+    },
+  ],
+};
+export const timeSheetUploadUserData: AwsFunction = {
+  handler: "src/handlers/uploadUserData.handler",
+  events: [
+    {
+      http: {
+        method: "POST",
+        path: "/api/uploadUserData",
+        cors: true,
       },
-    ],
-  },
+    },
+  ],
 };

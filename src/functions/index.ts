@@ -1,6 +1,8 @@
-import { TimeSheetFunctions } from "./timeSheetReport";
-import { kimaiEntryFunctions } from "./kimaiEntry";
+import { timeSheetUploadCSV, timeSheetUploadUserData } from "./timeSheetReport";
+import { kimaiScheduler } from "./kimaiEntry";
+
 export const functions = {
-  ...TimeSheetFunctions,
-  ...kimaiEntryFunctions,
+  timeSheetUploadCSV,
+  timeSheetUploadUserData,
+  kimaiScheduler,
 };
