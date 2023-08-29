@@ -14,18 +14,22 @@ const camelCase = (str: string) => {
 export const queryDatabase = async (
   databaseId: string,
   filterProperties: string[],
-  filter?: any
+  filter?: any,
+  sorts?: any
 ) => {
   const dbResponse = await notion.databases.query({
     database_id: databaseId,
     filter,
+    sorts,
   });
 
   const result = [];
 
   for (const record of dbResponse.results) {
-    if (record.object === "database") {
-      let outputObject = {};
+    if (record.object === "database" || record.object === "page") {
+      let outputObject = {
+        rowId: record.id,
+      };
       filterProperties.forEach((property) => {
         const cameliseKey = camelCase(property);
         if (record?.properties[property]?.type === "select") {
@@ -52,4 +56,8 @@ export const queryDatabase = async (
   }
 
   return result;
+};
+
+export const getDDevUserNames = async () => {
+  return await queryDatabase(process.env.NOTION_DB_TEAM_DIRECTORY, ["Name"]);
 };
