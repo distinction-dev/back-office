@@ -19,6 +19,8 @@ export const timeSheetUploadCSV: AwsFunction = {
       "${self:custom.notion.NOTION_DB_KIMAI_TOKENS.${self:custom.stage}}",
     NOTION_DB_PRODUCTIVITY_TRACKER:
       "${self:custom.notion.NOTION_DB_PRODUCTIVITY_TRACKER.${self:custom.stage}}",
+    NOTION_DB_TEAM_DIRECTORY:
+      "${self:custom.notion.NOTION_DB_TEAM_DIRECTORY.${self:custom.stage}}",
   },
 };
 export const timeSheetUploadUserData: AwsFunction = {
@@ -39,5 +41,7 @@ export const timeSheetUploadUserData: AwsFunction = {
       "${self:custom.notion.NOTION_DB_KIMAI_TOKENS.${self:custom.stage}}",
     NOTION_DB_PRODUCTIVITY_TRACKER:
       "${self:custom.notion.NOTION_DB_PRODUCTIVITY_TRACKER.${self:custom.stage}}",
+    NOTION_DB_TEAM_DIRECTORY:
+      "${self:custom.notion.NOTION_DB_TEAM_DIRECTORY.${self:custom.stage}}",
   },
 };
