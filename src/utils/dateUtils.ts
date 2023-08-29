@@ -9,3 +9,7 @@ export const getFirstDateOfMonth = () => {
 export const transformNotionDate = (notionDate: string, format: string) => {
   return moment(notionDate, "YYYY-MM-DD").format(format);
 };
+
+export const getWickesTimeSheetFileName = () => {
+  return "wickes_timesheet_" + moment().format("DD_MM_YYYY") + ".csv";
+};

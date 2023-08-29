@@ -7,7 +7,11 @@ import { response } from "@lib/resources/api-gateway";
 import { writeWickesCSVFile } from "src/utils/csvHandler";
 import { getPreSignedUrl, uploadFile } from "@lib/resources/s3";
 import { getDDevUserNames, queryDatabase } from "src/utils/notionUtils";
-import { getFirstDateOfMonth, transformNotionDate } from "src/utils/dateUtils";
+import {
+  getFirstDateOfMonth,
+  getWickesTimeSheetFileName,
+  transformNotionDate,
+} from "src/utils/dateUtils";
 
 export const handler: APIGatewayProxyHandler = async (
   event: APIGatewayEvent
@@ -78,7 +82,7 @@ export const handler: APIGatewayProxyHandler = async (
 
     await uploadFile(
       BucketNames.BackOfficeTimeSheetBucket,
-      "output/file.csv",
+      getWickesTimeSheetFileName(),
       bufferData
     );
 
@@ -86,7 +90,7 @@ export const handler: APIGatewayProxyHandler = async (
       url: await getPreSignedUrl(
         "getObject",
         BucketNames.BackOfficeTimeSheetBucket,
-        "output/file.csv"
+        getWickesTimeSheetFileName()
       ),
     });
   } catch (error) {
