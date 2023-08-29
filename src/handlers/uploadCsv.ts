@@ -1,23 +1,45 @@
-import { uploadFile } from "@lib/resources/s3";
-import { getUserNames } from "src/utils/csvHandler";
+import { APIGatewayProxyHandler } from "aws-lambda";
 import { response } from "@lib/resources/api-gateway";
-import { BucketNames } from "src/resources/constants";
-import * as multipart from "aws-lambda-multipart-parser";
-import { APIGatewayEvent, APIGatewayProxyHandler } from "aws-lambda";
 
-export const handler: APIGatewayProxyHandler = async (
-  event: APIGatewayEvent
-): Promise<any> => {
+import constant from "src/utils/constant";
+import { getFirstDateOfMonth } from "src/utils/dateUtils";
+import { onlyUnique, polishData } from "src/utils/arrayUtils";
+import { getDDevUserNames, queryDatabase } from "src/utils/notionUtils";
+
+export const handler: APIGatewayProxyHandler = async (): Promise<any> => {
   try {
-    const result = multipart.parse(event, true);
+    const ddevUsersNames = await getDDevUserNames();
 
-    const names = await getUserNames(result.file.content);
-
-    await uploadFile(
-      BucketNames.BackOfficeTimeSheetBucket,
-      "upload/file.csv",
-      result.file.content
+    const wickesRecordsNameIds = await queryDatabase(
+      process.env.NOTION_DB_PRODUCTIVITY_TRACKER,
+      ["Name"],
+      {
+        and: [
+          {
+            property: "Date",
+            date: {
+              on_or_after: getFirstDateOfMonth(),
+            },
+          },
+          {
+            property: "Customer",
+            select: {
+              equals: constant.WICKES_CUSTOMER,
+            },
+          },
+        ],
+      }
     );
+
+    const uniqueNameIds = wickesRecordsNameIds
+      .map((item) => item.name)
+      .filter(onlyUnique)
+      .filter(polishData);
+
+    const names = uniqueNameIds.map((item) => {
+      const index = ddevUsersNames.findIndex((user) => user.rowId === item);
+      if (index !== -1) return ddevUsersNames[index].name;
+    });
 
     return response(200, {
       message: "Inside upload csv",

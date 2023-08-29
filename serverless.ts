@@ -34,6 +34,11 @@ const serverlessConfiguration: ServerlessFrameworkConfiguration = {
         stage: "${ssm:/back-office/notion/prodTrackerDb/stage}",
         local: "",
       },
+      NOTION_DB_TEAM_DIRECTORY: {
+        prod: "${ssm:/back-office/notion/teamDirectoryDb/prod}",
+        stage: "${ssm:/back-office/notion/teamDirectoryDb/stage}",
+        local: "",
+      },
     },
     // cloudfrontInvalidate: [
     //   {
@@ -60,6 +65,7 @@ const serverlessConfiguration: ServerlessFrameworkConfiguration = {
   ],
   provider: {
     name: "aws",
+    timeout: 30,
     runtime: "nodejs16.x",
     region: "ap-south-1",
     stage: env.STAGE,
