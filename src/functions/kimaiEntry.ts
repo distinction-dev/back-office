@@ -2,6 +2,12 @@
 
 import { AwsFunction } from "serverless-schema";
 
+export const dyanmoPutData: AwsFunction = {
+  handler: "src/handlers/dyanmoPutData.handler",
+  timeout: 500,
+  memorySize: 512,
+};
+
 export const kimaiScheduler: AwsFunction = {
   handler: "src/handlers/kimaiScheduler.syncNotionDataToKimai",
   timeout: 500,
@@ -16,4 +22,14 @@ export const kimaiScheduler: AwsFunction = {
     NOTION_DB_TEAM_DIRECTORY:
       "${self:custom.notion.NOTION_DB_TEAM_DIRECTORY.${self:custom.stage}}",
   },
+  events: [
+    {
+      stream: {
+        type: "dynamodb",
+        arn: {
+          "Fn::GetAtt": ["BackOfficeTimeSheetDynamoTable", "StreamArn"],
+        },
+      },
+    },
+  ],
 };

@@ -144,7 +144,27 @@ const serverlessConfiguration: ServerlessFrameworkConfiguration = {
         Export: {
           Name: `BackOfficeTimeSheetBucketResourceArn-${env.STAGE}`,
         },
+
       },
+      BackOfficeTimeSheetDynamoTable: {
+        Value: {
+          "Fn::GetAtt": ["BackOfficeTimeSheetDynamoTable", "Arn"],
+        },
+        Export: {
+          Name: `BackOfficeTimeSheetDynamoTable-${env.STAGE}`,
+        },
+      },
+      BackOfficeTimeSheetDynamoTableResourceArn: {
+        Value: {
+          "Fn::Join": [
+            "",
+            [{ "Fn::GetAtt": ["BackOfficeTimeSheetDynamoTable", "Arn"] }, "/*"],
+          ],
+        },
+        Export: {
+          Name: `BackOfficeTimeSheetDynamoTableResourceArn-${env.STAGE}`,
+        },
+      }
       // CloudFrontDistributionId: {
       //   Description: "CloudFrontDistribution distribution id.",
       //   Value: {
