@@ -9,4 +9,5 @@ export const BackOfficeResources: Resources = {
   BackOfficeSiteBucket,
   // CloudFrontDistribution,
   BackOfficeTimeSheetBucket,
+  
 };
