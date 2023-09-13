@@ -33,7 +33,7 @@ export const queryDatabase = async (
       filterProperties.forEach((property) => {
         const cameliseKey = camelCase(property);
         if (record?.properties[property]?.type === "select") {
-          outputObject[cameliseKey] = record.properties[property].select.name;
+          outputObject[cameliseKey] = record.properties[property]?.select?.name;
         } else if (record?.properties[property]?.type === "rich_text") {
           outputObject[cameliseKey] =
             record.properties[property]?.rich_text[0]?.plain_text;
@@ -47,6 +47,14 @@ export const queryDatabase = async (
           outputObject[cameliseKey] = record.properties[property]?.email;
         } else if (record?.properties[property]?.type === "date") {
           outputObject[cameliseKey] = record.properties[property]?.date?.start;
+        } else if (record?.properties[property]?.type === "last_edited_by") {
+          outputObject[cameliseKey] =
+            record.properties[property]?.last_edited_by?.id;
+        } else if (record?.properties[property]?.type === "number") {
+          outputObject[cameliseKey] = record.properties[property]?.number;
+        } else if (record?.properties[property]?.type === "last_edited_time") {
+          outputObject[cameliseKey] =
+            record.properties[property]?.last_edited_time;
         } else {
           outputObject[cameliseKey] = record.properties[property];
         }
