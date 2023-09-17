@@ -13,7 +13,7 @@ module.exports.updateRecords = async (event) => {
       // Check if the date exists in the DynamoDB table for the editor
       const params = {
         TableName: DynamoDBTableNames.BackOfficeTimeSheetTableName,
-        Key: { Editorname: updatedItem.Editorname, date: updatedItem.date },
+        Key: { name: updatedItem.name, date: updatedItem.date },
       };
 
       try {
@@ -28,34 +28,35 @@ module.exports.updateRecords = async (event) => {
             })
             .promise();
           console.log(
-            `Created new record for Editorname: 
-            ${updatedItem.Editorname} and Date: ${updatedItem.date}`
+            `Created new record for name: 
+            ${updatedItem.name} and Date: ${updatedItem.date}`
           );
         } else if (
-          existingItem.Item.lastUpdateTime !== updatedItem.lastUpdateTime
+          existingItem.Item.lastEditedTime !== updatedItem.lastEditedTime
         ) {
-          // If the date exists but lastUpdateTime is different, update the record
+          // If the date exists but lastEditedTime is different, update the record
           await dynamoDB
             .update({
               TableName: DynamoDBTableNames.BackOfficeTimeSheetTableName,
               Key: {
-                Editorname: updatedItem.Editorname,
+                name: updatedItem.name,
                 date: updatedItem.date,
               },
-              UpdateExpression: "SET lastUpdateTime = :time, text = :text",
+              UpdateExpression:
+                "SET lastEditedTime = :time, description = :description",
               ExpressionAttributeValues: {
-                ":time": updatedItem.lastUpdateTime,
-                ":text": updatedItem.text,
+                ":time": updatedItem.lastEditedTime,
+                ":description": updatedItem.description,
               },
             })
             .promise();
           console.log(
-            `Updated record for Editorname: ${updatedItem.Editorname} 
+            `Updated record for name: ${updatedItem.name} 
             and Date: ${updatedItem.date}`
           );
         } else {
           console.log(
-            `No action needed for Editorname: ${updatedItem.Editorname} 
+            `No action needed for name: ${updatedItem.name} 
             and Date: ${updatedItem.date}`
           );
         }
