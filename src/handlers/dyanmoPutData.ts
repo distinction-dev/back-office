@@ -93,7 +93,7 @@ export const populateData = async () => {
   for (const item of apiData) {
     await dynamoDB
       .put({
-        TableName: DynamoDBTableNames.BackOfficeTimeSheetTableName,
+        TableName: DynamoDBTableNames.BackOfficeTimeSheetDynamoTable,
         Item: item,
       })
       .promise();

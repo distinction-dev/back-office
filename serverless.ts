@@ -144,7 +144,6 @@ const serverlessConfiguration: ServerlessFrameworkConfiguration = {
         Export: {
           Name: `BackOfficeTimeSheetBucketResourceArn-${env.STAGE}`,
         },
-
       },
       BackOfficeTimeSheetDynamoTable: {
         Value: {
@@ -164,7 +163,7 @@ const serverlessConfiguration: ServerlessFrameworkConfiguration = {
         Export: {
           Name: `BackOfficeTimeSheetDynamoTableResourceArn-${env.STAGE}`,
         },
-      }
+      },
       // CloudFrontDistributionId: {
       //   Description: "CloudFrontDistribution distribution id.",
       //   Value: {

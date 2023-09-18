@@ -4,7 +4,7 @@ import { DynamoDBTableNames } from "./constants";
 export const dynamoResources: AWSDynamoDBTable = {
   Type: "AWS::DynamoDB::Table",
   Properties: {
-    TableName: DynamoDBTableNames.BackOfficeTimeSheetTableName,
+    TableName: DynamoDBTableNames.BackOfficeTimeSheetDynamoTable,
     AttributeDefinitions: [
       {
         AttributeName: "id",
