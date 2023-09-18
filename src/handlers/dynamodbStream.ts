@@ -12,7 +12,7 @@ module.exports.updateRecords = async (event) => {
 
       // Check if the date exists in the DynamoDB table for the editor
       const params = {
-        TableName: DynamoDBTableNames.BackOfficeTimeSheetTableName,
+        TableName: DynamoDBTableNames.BackOfficeTimeSheetDynamoTable,
         Key: { name: updatedItem.name, date: updatedItem.date },
       };
 
@@ -23,7 +23,7 @@ module.exports.updateRecords = async (event) => {
         if (!existingItem.Item) {
           await dynamoDB
             .put({
-              TableName: DynamoDBTableNames.BackOfficeTimeSheetTableName,
+              TableName: DynamoDBTableNames.BackOfficeTimeSheetDynamoTable,
               Item: updatedItem,
             })
             .promise();
@@ -37,7 +37,7 @@ module.exports.updateRecords = async (event) => {
           // If the date exists but lastEditedTime is different, update the record
           await dynamoDB
             .update({
-              TableName: DynamoDBTableNames.BackOfficeTimeSheetTableName,
+              TableName: DynamoDBTableNames.BackOfficeTimeSheetDynamoTable,
               Key: {
                 name: updatedItem.name,
                 date: updatedItem.date,
