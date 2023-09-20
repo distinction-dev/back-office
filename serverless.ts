@@ -101,6 +101,11 @@ const serverlessConfiguration: ServerlessFrameworkConfiguration = {
           "${self:resources.Outputs.BackOfficeTimeSheetBucketResourceArn.Value}",
         ],
       },
+      {
+        Effect: "Allow",
+        Action: ["dynamodb:*"],
+        Resource: "*",
+      },
     ],
   },
   package: {
