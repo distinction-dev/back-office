@@ -2,7 +2,7 @@
 const AWS = require("aws-sdk");
 const dynamoDB = new AWS.DynamoDB.DocumentClient();
 import { DynamoDBTableNames } from "../resources/constants";
-module.exports.updateRecords = async (event) => {
+export const handler = async (event) => {
   for (const record of event.Records) {
     if (record.eventName === "MODIFY") {
       // Extract the updated item from the record

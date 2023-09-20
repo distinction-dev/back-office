@@ -85,7 +85,7 @@ const exampleRecord: notionRecord = {
   lastEditedTime: "2023-09-12T06:55:00.000Z",
 };
 
-export const populateData = async () => {
+export const handler = async () => {
   // Fetch data from the notion API
   const apiData = await fetchNotionData();
 
