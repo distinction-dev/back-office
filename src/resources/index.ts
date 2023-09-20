@@ -2,6 +2,7 @@ import { Resources } from "serverless-schema";
 import { BackOfficeTimeSheetBucket } from "./s3";
 import { ApiGatewayResource } from "./apiGateway";
 import { BackOfficeSiteBucket } from "./frontend-resources/siteBucket";
+import { BackOfficeTimeSheetDynamoTable } from "./dynamoResources";
 // import { CloudFrontDistribution } from "./frontend-resources/cloudfront";
 
 export const BackOfficeResources: Resources = {
@@ -9,5 +10,5 @@ export const BackOfficeResources: Resources = {
   BackOfficeSiteBucket,
   // CloudFrontDistribution,
   BackOfficeTimeSheetBucket,
-  
+  BackOfficeTimeSheetDynamoTable,
 };
