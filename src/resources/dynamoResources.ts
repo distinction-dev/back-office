@@ -10,6 +10,14 @@ export const BackOfficeTimeSheetDynamoTable: AWSDynamoDBTable = {
         AttributeName: "id",
         AttributeType: "S",
       },
+      {
+        AttributeName: "date",
+        AttributeType: "S",
+      },
+      {
+        AttributeName: "name",
+        AttributeType: "S",
+      },
     ],
     KeySchema: [
       {
