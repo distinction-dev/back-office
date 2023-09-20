@@ -1,7 +1,7 @@
 import { AWSDynamoDBTable } from "serverless-schema";
 import { DynamoDBTableNames } from "./constants";
 
-export const dynamoResources: AWSDynamoDBTable = {
+export const BackOfficeTimeSheetDynamoTable: AWSDynamoDBTable = {
   Type: "AWS::DynamoDB::Table",
   Properties: {
     TableName: DynamoDBTableNames.BackOfficeTimeSheetDynamoTable,
