@@ -4,7 +4,7 @@ const AWS = require("aws-sdk");
 const dynamoDB = new AWS.DynamoDB.DocumentClient();
 import { DynamoDBTableNames } from "../resources/constants";
 import { queryDatabase, getDDevUserNames } from "src/utils/notionUtils";
-
+import { v4 } from "uuid";
 const getFirstDateOfMonth = () => {
   const dt = new Date();
   dt.setDate(1);
@@ -94,7 +94,7 @@ export const handler = async () => {
     await dynamoDB
       .put({
         TableName: DynamoDBTableNames.BackOfficeTimeSheetDynamoTable,
-        Item: item,
+        Item: { ...item, id: v4() },
       })
       .promise();
   }
