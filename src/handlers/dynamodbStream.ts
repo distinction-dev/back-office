@@ -28,9 +28,10 @@ const getStartEndTimeStrings = (
 export const handler = async (event) => {
   try {
     for (const record of event.Records) {
+      console.log({ record });
       if (record.eventName === "MODIFY") {
         // Extract the updated item from the record
-        const updatedItem = unmarshall(record.dynamodb.NewImage);
+        const updatedItem = unmarshall(record.dynamodb.NewImage, {});
 
         // Check if the date exists in the DynamoDB table for the editor
         const params = {
