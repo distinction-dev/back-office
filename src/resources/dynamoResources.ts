@@ -34,22 +34,22 @@ export const BackOfficeTimeSheetDynamoTable: AWSDynamoDBTable = {
       StreamViewType: "NEW_AND_OLD_IMAGES",
     },
     GlobalSecondaryIndexes: [
-      {
-        IndexName: DynamoDBTableNames.DateNameIndex,
-        KeySchema: [
-          {
-            AttributeName: "name",
-            KeyType: "HASH",
-          },
-          {
-            AttributeName: "dateTimestamp",
-            KeyType: "RANGE",
-          },
-        ],
-        Projection: {
-          ProjectionType: "ALL",
-        },
-      },
+      // {
+      //   IndexName: DynamoDBTableNames.DateNameIndex,
+      //   KeySchema: [
+      //     {
+      //       AttributeName: "name",
+      //       KeyType: "HASH",
+      //     },
+      //     {
+      //       AttributeName: "dateTimestamp",
+      //       KeyType: "RANGE",
+      //     },
+      //   ],
+      //   Projection: {
+      //     ProjectionType: "ALL",
+      //   },
+      // },
       {
         IndexName: DynamoDBTableNames.CustomerNameDateCompIndex,
         KeySchema: [
