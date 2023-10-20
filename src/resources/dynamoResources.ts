@@ -10,14 +10,14 @@ export const BackOfficeTimeSheetDynamoTable: AWSDynamoDBTable = {
         AttributeName: "id",
         AttributeType: "S",
       },
-      {
-        AttributeName: "dateTimestamp",
-        AttributeType: "S",
-      },
-      {
-        AttributeName: "name",
-        AttributeType: "S",
-      },
+      // {
+      //   AttributeName: "dateTimestamp",
+      //   AttributeType: "S",
+      // },
+      // {
+      //   AttributeName: "name",
+      //   AttributeType: "S",
+      // },
       {
         AttributeName: "customer",
         AttributeType: "S",
