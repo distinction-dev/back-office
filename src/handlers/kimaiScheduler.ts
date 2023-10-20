@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
-// import { sendTimeSheetRecordToKimai } from "src/utils/kimaiUtils";
+import { sendTimeSheetRecordToKimai } from "src/utils/kimaiUtils";
+import { response } from "@lib/resources/api-gateway";
 import { queryDatabase } from "src/utils/notionUtils";
 
 const ONMO_CUSTOMER = "Onmo Consulting";
@@ -33,12 +34,14 @@ export const syncNotionDataToKimai = async () => {
     );
 
     let results = [];
+    let total = {};
 
     for (const dev of onmoDevsKiamiData) {
       if (!dev?.userName) {
         console.error("Dev has not added user name", dev);
         continue;
       }
+      console.log({ userName: dev, date: getFirstDateOfMonth() });
       const timesheetRecords = await queryDatabase(
         process.env.NOTION_DB_PRODUCTIVITY_TRACKER,
         ["Date", "Description"],
@@ -67,6 +70,7 @@ export const syncNotionDataToKimai = async () => {
       );
 
       const modifiedRecords = timesheetRecords.map((record) => {
+        total[dev.name] = 0;
         const { begin, end } = getStartEndTimeStrings(record.date, 10, 18);
         return {
           begin,
@@ -83,24 +87,46 @@ export const syncNotionDataToKimai = async () => {
       results = [...results, ...modifiedRecords];
     }
 
-    // Send Data To Kimai Example
-    // const myObj = results[results.length - 1];
-    // const body = JSON.stringify({
-    //   begin: myObj.begin,
-    //   end: myObj.end,
-    //   project: myObj.project,
-    //   activity: myObj.activity,
-    //   description: myObj.description,
-    // });
+    let count = 0;
+    for (let i = 0; i < results.length; i++) {
+      const element = results[i];
+      console.log({ element });
 
-    // const kimaiResponse = await sendTimeSheetRecordToKimai(
-    //   myObj.email,
-    //   myObj.authToken,
-    //   body
-    // );
+      const body = JSON.stringify({
+        begin: element.begin,
+        end: element.end,
+        project: element.project,
+        activity: element.activity,
+        description: element.description,
+      });
 
-    console.log(JSON.stringify(results));
+      try {
+        const kimaiResponse = await sendTimeSheetRecordToKimai(
+          element.email,
+          element.authToken,
+          body
+        );
+        if (kimaiResponse) {
+          count += 1;
+          total[element.name] += 1;
+        }
+      } catch (error) {
+        console.error("-".repeat(20));
+        console.error("KIMAI API ERROR");
+        console.error(error);
+        console.error("-".repeat(20));
+      }
+    }
+    console.log({ totalEntries: results.length });
+    console.log({ count });
+    console.log("-".repeat(10));
+    console.log(total);
+    console.log("-".repeat(10));
   } catch (error) {
     console.error(error);
+    response(500, {
+      error: JSON.stringify(error),
+      message: error?.message,
+    });
   }
 };
