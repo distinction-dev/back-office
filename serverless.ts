@@ -20,24 +20,24 @@ const serverlessConfiguration: ServerlessFrameworkConfiguration = {
     },
     notion: {
       NOTION_AUTH_TOKEN: {
-        // prod: "${ssm:/back-office/notion/authToken/prod}",
-        // stage: "${ssm:/back-office/notion/authToken/stage}",
-        local: "secret_WWKeDjrn0vUZKZXAY5s6HPAjgIHI2IxPuKPggsnsger",
+        prod: "${ssm:/back-office/notion/authToken/prod}",
+        stage: "${ssm:/back-office/notion/authToken/stage}",
+        local: "",
       },
       NOTION_DB_KIMAI_TOKENS: {
-        // prod: "${ssm:/back-office/notion/kimaiDb/prod}",
-        // stage: "${ssm:/back-office/notion/kimaiDb/stage}",
-        local: "e36147c73a1a44ff85cb4ca9dfa97950",
+        prod: "${ssm:/back-office/notion/kimaiDb/prod}",
+        stage: "${ssm:/back-office/notion/kimaiDb/stage}",
+        local: "",
       },
       NOTION_DB_PRODUCTIVITY_TRACKER: {
-        // prod: "${ssm:/back-office/notion/prodTrackerDb/prod}",
-        // stage: "${ssm:/back-office/notion/prodTrackerDb/stage}",
-        local: "a948e62de0404e5c8f3afba933b0531b",
+        prod: "${ssm:/back-office/notion/prodTrackerDb/prod}",
+        stage: "${ssm:/back-office/notion/prodTrackerDb/stage}",
+        local: "",
       },
       NOTION_DB_TEAM_DIRECTORY: {
-        // prod: "${ssm:/back-office/notion/teamDirectoryDb/prod}",
-        // stage: "${ssm:/back-office/notion/teamDirectoryDb/stage}",
-        local: "902f8dab6d2348499e0577de3d47658f",
+        prod: "${ssm:/back-office/notion/teamDirectoryDb/prod}",
+        stage: "${ssm:/back-office/notion/teamDirectoryDb/stage}",
+        local: "",
       },
     },
     // cloudfrontInvalidate: [
@@ -48,10 +48,10 @@ const serverlessConfiguration: ServerlessFrameworkConfiguration = {
     //   },
     // ],
     /* Enable this */
-    s3: {
-      host: "localhost",
-      directory: "./buckets",
-    },
+    // s3: {
+    //   host: "localhost",
+    //   directory: "./buckets",
+    // },
     /* In Local */
   },
   plugins: [
@@ -59,7 +59,7 @@ const serverlessConfiguration: ServerlessFrameworkConfiguration = {
     "serverless-prune-plugin",
     // "serverless-cloudfront-invalidate",
     /* Enable this */
-    "serverless-s3-local",
+    // "serverless-s3-local",
     /* In Local */
     "serverless-offline",
   ],
