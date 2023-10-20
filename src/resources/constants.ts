@@ -10,3 +10,7 @@ export const DynamoDBTableNames = {
   DateNameIndex: `name-date-index`,
   CustomerNameDateCompIndex: `customer-name-date-comp-index`,
 };
+
+export const SQSQueueNames = {
+  KimaiFailedQueue: `kimai_failed_entries_${env.STAGE}`,
+};

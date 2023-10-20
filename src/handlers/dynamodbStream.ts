@@ -9,6 +9,8 @@ import { unmarshall } from "@aws-sdk/util-dynamodb";
 import dayjs from "dayjs";
 import { DynamoDBStreamEvent } from "aws-lambda";
 import { GetItemCommandInput } from "@aws-sdk/client-dynamodb";
+import { sendBatchSQSMessage } from "@lib/resources/sqs";
+import { v4 as uuid } from "uuid";
 
 // import { sendTimeSheetRecordToKimai } from "src/utils/kimaiUtils";
 
@@ -28,6 +30,7 @@ const getStartEndTimeStrings = (
 };
 
 export const handler = async (event: DynamoDBStreamEvent) => {
+  const failedKimaiEntries = [];
   try {
     console.log({ event });
     for (const record of event.Records) {
@@ -71,15 +74,24 @@ export const handler = async (event: DynamoDBStreamEvent) => {
           );
 
           // TODO :: if customer is onmo
-          // const kimaiResponse = await sendTimeSheetRecordToKimai(
-          //   element.email,
-          //   element.authToken,
-          //   JSON.stringify(kimaiRecord)
-          // );
+          /*
+            try {
+              const kimaiResponse = await sendTimeSheetRecordToKimai(
+                element.email,
+                element.authToken,
+                JSON.stringify(kimaiRecord)
+              );
+              // console.log("Created - Kimai API Response", kimaiResponse);
+            } catch (error) {
+              failedKimaiEntries.push({
+                element.email,
+                element.authToken,
+                JSON.stringify(kimaiRecord)
+              })
+            }
+          */
 
           // TODO :: Update record for kimai ID
-
-          // console.log("Created - Kimai API Response", kimaiResponse);
         } else if (
           existingItem.Item.lastEditedTime !== updatedItem.lastEditedTime
         ) {
@@ -131,12 +143,22 @@ export const handler = async (event: DynamoDBStreamEvent) => {
 
         // TODO :: if customer is onmo
 
-        // const kimaiResponse = await sendTimeSheetRecordToKimai(
-        //   element.email,
-        //   element.authToken,
-        //   JSON.stringify(kimaiRecord)
-        // );
-        // console.log("Created - Kimai API Response", kimaiResponse);
+        /*
+            try {
+              const kimaiResponse = await sendTimeSheetRecordToKimai(
+                element.email,
+                element.authToken,
+                JSON.stringify(kimaiRecord)
+              );
+              // console.log("Created - Kimai API Response", kimaiResponse);
+            } catch (error) {
+              failedKimaiEntries.push({
+                element.email,
+                element.authToken,
+                JSON.stringify(kimaiRecord)
+              })
+            }
+          */
 
         // TODO :: Update record for kimai ID
 
@@ -150,5 +172,16 @@ export const handler = async (event: DynamoDBStreamEvent) => {
     }
   } catch (error) {
     console.log(error);
+    if (failedKimaiEntries.length) {
+      await sendBatchSQSMessage({
+        QueueUrl: process.env.FAILED_KIMAI_ENTRIES_SQS_URL,
+        Entries: failedKimaiEntries.map((el: any) => {
+          return {
+            Id: uuid(),
+            MessageBody: el,
+          };
+        }),
+      });
+    }
   }
 };

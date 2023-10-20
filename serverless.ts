@@ -42,6 +42,8 @@ const serverlessConfiguration: ServerlessFrameworkConfiguration = {
       },
       sync: {
         mode: "${strToBool(${ssm:/back-office/notion-sync/scheduler/mode/${self:custom.stage}})}",
+        failedKimaiSQSUrl:
+          "${self:resources.Outputs.FailedKimaiQueueURL.Value}",
       },
     },
     // cloudfrontInvalidate: [
@@ -173,13 +175,19 @@ const serverlessConfiguration: ServerlessFrameworkConfiguration = {
           Name: `BackOfficeTimeSheetDynamoTableResourceArn-${env.STAGE}`,
         },
       },
-      // CloudFrontDistributionId: {
-      //   Description: "CloudFrontDistribution distribution id.",
-      //   Value: {
-      //     Ref: "CloudFrontDistribution",
-      //   },
-      // },
+      FailedKimaiQueueURL: {
+        Value: { Ref: "KimaiFailedEntriesQueue" },
+        Export: {
+          Name: `FailedKimaiQueueURL-${env.STAGE}`,
+        },
+      },
     },
+    // CloudFrontDistributionId: {
+    //   Description: "CloudFrontDistribution distribution id.",
+    //   Value: {
+    //     Ref: "CloudFrontDistribution",
+    //   },
+    // },
   },
 };
 
