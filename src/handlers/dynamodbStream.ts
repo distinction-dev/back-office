@@ -5,8 +5,9 @@ import {
   updateItemDynamoDB,
 } from "@lib/resources/dynamo";
 import { DynamoDBTableNames } from "../resources/constants";
-import { unmarshallOutput } from "@aws-sdk/lib-dynamodb/dist-types/commands/utils";
-import * as dayjs from "dayjs";
+import { unmarshall } from "@aws-sdk/util-dynamodb";
+import dayjs from "dayjs";
+
 // import { sendTimeSheetRecordToKimai } from "src/utils/kimaiUtils";
 
 const getStartEndTimeStrings = (
@@ -29,7 +30,7 @@ export const handler = async (event) => {
     for (const record of event.Records) {
       if (record.eventName === "MODIFY") {
         // Extract the updated item from the record
-        const updatedItem = unmarshallOutput(record.dynamodb.NewImage, []);
+        const updatedItem = unmarshall(record.dynamodb.NewImage, []);
 
         // Check if the date exists in the DynamoDB table for the editor
         const params = {
@@ -102,7 +103,7 @@ export const handler = async (event) => {
         }
       } else if (record.eventName === "CREATE") {
         // Extract the updated item from the record
-        const createdItem = unmarshallOutput(record.dynamodb.NewImage, []);
+        const createdItem = unmarshall(record.dynamodb.NewImage, []);
 
         const { begin, end } = getStartEndTimeStrings(createdItem.date, 10, 18);
         const kimaiRecord = {

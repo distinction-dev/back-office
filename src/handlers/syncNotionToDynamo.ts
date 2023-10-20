@@ -3,7 +3,7 @@
 import { putSingleItemDynamoDB } from "@lib/resources/dynamo";
 import { DynamoDBTableNames } from "../resources/constants";
 import { queryDatabase, getDDevUserNames } from "src/utils/notionUtils";
-import * as dayjs from "dayjs";
+import dayjs from "dayjs";
 
 const getFirstDateOfMonth = () => {
   const dt = new Date();
