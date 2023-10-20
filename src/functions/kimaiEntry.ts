@@ -21,8 +21,8 @@ export const syncNotionToDynamo: AwsFunction = {
     {
       schedule: {
         name: `notionSync-${env.STAGE}`,
-        enabled: false,
-        rate: "* 12 * * ? *",
+        enabled: "${self:custom.notion.sync.mode}" as any,
+        rate: "cron(* 12 * * ? *)",
       },
     },
   ],
@@ -43,14 +43,6 @@ export const kimaiScheduler: AwsFunction = {
       "${self:custom.notion.NOTION_DB_TEAM_DIRECTORY.${self:custom.stage}}",
   },
   events: [
-    {
-      stream: {
-        type: "dynamodb",
-        arn: {
-          "Fn::GetAtt": ["BackOfficeTimeSheetDynamoTable", "StreamArn"],
-        },
-      },
-    },
     {
       http: {
         path: "/api/kimai/entries",

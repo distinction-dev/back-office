@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { functions } from "@functions/index";
 import env from "@lib/env";
 import { ServerlessFrameworkConfiguration } from "serverless-schema";
@@ -38,6 +39,9 @@ const serverlessConfiguration: ServerlessFrameworkConfiguration = {
         prod: "${ssm:/back-office/notion/teamDirectoryDb/prod}",
         stage: "${ssm:/back-office/notion/teamDirectoryDb/stage}",
         local: "",
+      },
+      sync: {
+        mode: "${strToBool('${ssm:/back-office/notion/teamDirectoryDb/${self:custom.stage}}')}",
       },
     },
     // cloudfrontInvalidate: [
