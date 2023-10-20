@@ -1,6 +1,5 @@
 import { readFile } from "node:fs/promises";
 import { APIGatewayEvent, APIGatewayProxyHandler } from "aws-lambda";
-
 import constant from "src/utils/constant";
 import { BucketNames } from "src/resources/constants";
 import { response } from "@lib/resources/api-gateway";
@@ -20,7 +19,9 @@ export const handler: APIGatewayProxyHandler = async (
     const requestBody: any = event.body;
     const ddevUserNames = await getDDevUserNames();
     const parsedBody = JSON.parse(requestBody);
+    console.log({ parsedBody });
     const wickesUserNames = Object.keys(parsedBody);
+    console.log({ wickesUserNames });
 
     let finalResult = [];
 

@@ -1,9 +1,10 @@
 /* eslint-disable max-len */
 
+import env from "@lib/env";
 import { AwsFunction } from "serverless-schema";
 
-export const dyanmoPutData: AwsFunction = {
-  handler: "src/handlers/dyanmoPutData.handler",
+export const syncNotionToDynamo: AwsFunction = {
+  handler: "src/handlers/syncNotionToDynamo.handler",
   timeout: 500,
   memorySize: 512,
   environment: {
@@ -16,6 +17,15 @@ export const dyanmoPutData: AwsFunction = {
     NOTION_DB_TEAM_DIRECTORY:
       "${self:custom.notion.NOTION_DB_TEAM_DIRECTORY.${self:custom.stage}}",
   },
+  events: [
+    {
+      schedule: {
+        name: `notionSync-${env.STAGE}`,
+        enabled: false,
+        rate: "* 12 * * ? *",
+      },
+    },
+  ],
 };
 
 export const kimaiScheduler: AwsFunction = {
@@ -39,6 +49,13 @@ export const kimaiScheduler: AwsFunction = {
         arn: {
           "Fn::GetAtt": ["BackOfficeTimeSheetDynamoTable", "StreamArn"],
         },
+      },
+    },
+    {
+      http: {
+        path: "/api/kimai/entries",
+        method: "POST",
+        cors: true,
       },
     },
   ],

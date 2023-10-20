@@ -4,18 +4,22 @@ import { DynamoDBTableNames } from "./constants";
 export const BackOfficeTimeSheetDynamoTable: AWSDynamoDBTable = {
   Type: "AWS::DynamoDB::Table",
   Properties: {
-    TableName: DynamoDBTableNames.BackOfficeTimeSheetDynamoTable,
+    TableName: DynamoDBTableNames.TimeSheetDynamoTable,
     AttributeDefinitions: [
       {
         AttributeName: "id",
         AttributeType: "S",
       },
       {
-        AttributeName: "date",
+        AttributeName: "dateTimestamp",
         AttributeType: "S",
       },
       {
         AttributeName: "name",
+        AttributeType: "S",
+      },
+      {
+        AttributeName: "nameDateTimestamp",
         AttributeType: "S",
       },
     ],
@@ -30,15 +34,31 @@ export const BackOfficeTimeSheetDynamoTable: AWSDynamoDBTable = {
       StreamViewType: "NEW_AND_OLD_IMAGES",
     },
     GlobalSecondaryIndexes: [
+      // {
+      //   IndexName: DynamoDBTableNames.DateNameIndex,
+      //   KeySchema: [
+      //     {
+      //       AttributeName: "name",
+      //       KeyType: "HASH",
+      //     },
+      //     {
+      //       AttributeName: "dateTimestamp",
+      //       KeyType: "RANGE",
+      //     },
+      //   ],
+      //   Projection: {
+      //     ProjectionType: "ALL",
+      //   },
+      // },
       {
-        IndexName: "DateNameIndex",
+        IndexName: DynamoDBTableNames.CustomerNameDateCompIndex,
         KeySchema: [
           {
-            AttributeName: "date",
+            AttributeName: "customer",
             KeyType: "HASH",
           },
           {
-            AttributeName: "name",
+            AttributeName: "nameDateTimestamp",
             KeyType: "RANGE",
           },
         ],

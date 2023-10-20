@@ -1,19 +1,7 @@
 const fs = require("fs");
-const createCsvWriter = require("csv-writer").createObjectCsvWriter;
+import { createObjectCsvWriter } from "csv-writer";
 
 import constant from "./constant";
-
-const csvWriter = createCsvWriter({
-  path: `${constant.TEMP_PATH}/output.csv`,
-  header: [
-    { id: "date", title: "Date" },
-    { id: "customer", title: "Customer" },
-    { id: "ticket", title: "Ticket" },
-    { id: "hours", title: "Hours" },
-    { id: "description", title: "Description" },
-    { id: "contact", title: "Contact" },
-  ],
-});
 
 export const writeFilePromise = async (
   path: string,
@@ -28,6 +16,17 @@ export const writeFilePromise = async (
 };
 
 export const writeWickesCSVFile = async (records: any[]) => {
+  const csvWriter = createObjectCsvWriter({
+    path: `${constant.TEMP_PATH}/output.csv`,
+    header: [
+      { id: "date", title: "Date" },
+      { id: "customer", title: "Customer" },
+      { id: "ticket", title: "Ticket" },
+      { id: "hours", title: "Hours" },
+      { id: "description", title: "Description" },
+      { id: "contact", title: "Contact" },
+    ],
+  });
   await csvWriter.writeRecords(records);
   return `${constant.TEMP_PATH}/output.csv`;
 };

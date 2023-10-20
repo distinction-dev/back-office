@@ -6,4 +6,7 @@ export const BucketNames = {
 };
 export const DynamoDBTableNames = {
   BackOfficeTimeSheetDynamoTable: `back-office-timesheet-${env.STAGE}`,
+  TimeSheetDynamoTable: `timesheet-${env.STAGE}`,
+  DateNameIndex: `name-date-index`,
+  CustomerNameDateCompIndex: `customer-name-date-comp-index`,
 };
