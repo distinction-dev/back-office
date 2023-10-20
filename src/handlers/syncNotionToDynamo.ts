@@ -4,7 +4,7 @@ import { putSingleItemDynamoDB } from "@lib/resources/dynamo";
 import { DynamoDBTableNames } from "../resources/constants";
 import { queryDatabase, getDDevUserNames } from "src/utils/notionUtils";
 import dayjs from "dayjs";
-import { marshall } from "@aws-sdk/util-dynamodb";
+import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 
 const getFirstDateOfMonth = () => {
   const dt = new Date();
@@ -101,7 +101,7 @@ export const handler = async () => {
     for (const item of apiData) {
       await putSingleItemDynamoDB({
         TableName: DynamoDBTableNames.TimeSheetDynamoTable,
-        Item: marshall(item, { removeUndefinedValues: true }),
+        Item: unmarshall(marshall(item, { removeUndefinedValues: true })),
       });
     }
   } catch (error) {

@@ -23,7 +23,11 @@ export const client = new DynamoDBClient({
   apiVersion: "latest",
 });
 
-export const documentClient = DynamoDBDocumentClient.from(client);
+export const documentClient = DynamoDBDocumentClient.from(client, {
+  marshallOptions: {
+    removeUndefinedValues: true,
+  },
+});
 
 export const getSingleItemDynamoDB = async (
   params: GetCommandInput
