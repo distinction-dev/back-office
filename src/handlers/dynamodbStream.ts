@@ -7,6 +7,8 @@ import {
 import { DynamoDBTableNames } from "../resources/constants";
 import { unmarshall } from "@aws-sdk/util-dynamodb";
 import dayjs from "dayjs";
+import { DynamoDBStreamEvent } from "aws-lambda";
+import { GetItemCommandInput } from "@aws-sdk/client-dynamodb";
 
 // import { sendTimeSheetRecordToKimai } from "src/utils/kimaiUtils";
 
@@ -25,20 +27,21 @@ const getStartEndTimeStrings = (
   };
 };
 
-export const handler = async (event) => {
+export const handler = async (event: DynamoDBStreamEvent) => {
   try {
+    console.log({ event });
     for (const record of event.Records) {
       console.log({ record });
       if (record.eventName === "MODIFY") {
         // Extract the updated item from the record
-        const updatedItem = unmarshall(record.dynamodb.NewImage, {});
+        const updatedItem = unmarshall(record.dynamodb.NewImage as any);
 
         // Check if the date exists in the DynamoDB table for the editor
-        const params = {
-          TableName: DynamoDBTableNames.BackOfficeTimeSheetDynamoTable,
+        const params: GetItemCommandInput = {
+          TableName: DynamoDBTableNames.TimeSheetDynamoTable,
           Key: {
             name: updatedItem.name,
-            dateTimestamp: dayjs(updatedItem.date, "YYYY-MM-DD").unix(),
+            dateTimestamp: dayjs(updatedItem.date, "YYYY-MM-DD").unix() as any,
           },
         };
 
@@ -58,7 +61,7 @@ export const handler = async (event) => {
         // If the date does not exist, create a new record
         if (!existingItem.Item) {
           await putSingleItemDynamoDB({
-            TableName: DynamoDBTableNames.BackOfficeTimeSheetDynamoTable,
+            TableName: DynamoDBTableNames.TimeSheetDynamoTable,
             Item: updatedItem,
           });
 
@@ -82,7 +85,7 @@ export const handler = async (event) => {
         ) {
           // If the date exists but lastEditedTime is different, update the record
           await updateItemDynamoDB({
-            TableName: DynamoDBTableNames.BackOfficeTimeSheetDynamoTable,
+            TableName: DynamoDBTableNames.TimeSheetDynamoTable,
             Key: {
               name: updatedItem.name,
               date: updatedItem.date,
@@ -102,9 +105,9 @@ export const handler = async (event) => {
             `No action needed for name: ${updatedItem.name} and Date: ${updatedItem.date}`
           );
         }
-      } else if (record.eventName === "CREATE") {
+      } else if (record.eventName === "INSERT") {
         // Extract the updated item from the record
-        const createdItem = unmarshall(record.dynamodb.NewImage);
+        const createdItem = unmarshall(record.dynamodb.NewImage as any);
 
         const { begin, end } = getStartEndTimeStrings(createdItem.date, 10, 18);
         const kimaiRecord = {
@@ -119,7 +122,7 @@ export const handler = async (event) => {
         };
         console.log("Kimai Record Body", kimaiRecord);
         await putSingleItemDynamoDB({
-          TableName: DynamoDBTableNames.BackOfficeTimeSheetDynamoTable,
+          TableName: DynamoDBTableNames.TimeSheetDynamoTable,
           Item: createdItem,
         });
         console.log(
@@ -139,7 +142,7 @@ export const handler = async (event) => {
 
         // Check if the date exists in the DynamoDB table for the editor
         const params = {
-          TableName: DynamoDBTableNames.BackOfficeTimeSheetDynamoTable,
+          TableName: DynamoDBTableNames.TimeSheetDynamoTable,
           Key: { name: createdItem.name, date: createdItem.date },
         };
         console.log(params);

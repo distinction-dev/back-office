@@ -50,7 +50,7 @@ const fetchNotionData = async () => {
 
       const modifiedRecords = records.map((record) => ({
         name: ddevUser.name,
-        dateTimestamp: dayjs(record.date, "YYYY-MM-DD").unix(),
+        dateTimestamp: `${dayjs(record.date, "YYYY-MM-DD").unix()}`,
         nameDateTimestamp: `${dayjs(record.date, "YYYY-MM-DD").unix()}_${
           ddevUser.name
         }`,
@@ -95,11 +95,11 @@ export const handler = async () => {
   try {
     // Fetch data from the notion API
     const apiData: Array<NotionRecord> = await fetchNotionData();
-
+    console.log({ apiData });
     // Insert data into DynamoDB
     for (const item of apiData) {
       await putSingleItemDynamoDB({
-        TableName: DynamoDBTableNames.BackOfficeTimeSheetDynamoTable,
+        TableName: DynamoDBTableNames.TimeSheetDynamoTable,
         Item: { ...item },
       });
     }
