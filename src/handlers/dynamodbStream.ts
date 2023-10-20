@@ -25,21 +25,21 @@ const getStartEndTimeStrings = (
 };
 
 export const handler = async (event) => {
-  for (const record of event.Records) {
-    if (record.eventName === "MODIFY") {
-      // Extract the updated item from the record
-      const updatedItem = unmarshallOutput(record.dynamodb.NewImage, []);
+  try {
+    for (const record of event.Records) {
+      if (record.eventName === "MODIFY") {
+        // Extract the updated item from the record
+        const updatedItem = unmarshallOutput(record.dynamodb.NewImage, []);
 
-      // Check if the date exists in the DynamoDB table for the editor
-      const params = {
-        TableName: DynamoDBTableNames.BackOfficeTimeSheetDynamoTable,
-        Key: {
-          name: updatedItem.name,
-          dateTimestamp: dayjs(updatedItem.date, "YYYY-MM-DD").unix(),
-        },
-      };
+        // Check if the date exists in the DynamoDB table for the editor
+        const params = {
+          TableName: DynamoDBTableNames.BackOfficeTimeSheetDynamoTable,
+          Key: {
+            name: updatedItem.name,
+            dateTimestamp: dayjs(updatedItem.date, "YYYY-MM-DD").unix(),
+          },
+        };
 
-      try {
         const existingItem = await getSingleItemDynamoDB(params);
         const { begin, end } = getStartEndTimeStrings(updatedItem.date, 10, 18);
         const kimaiRecord = {
@@ -65,11 +65,14 @@ export const handler = async (event) => {
             ${updatedItem.name} and Date: ${updatedItem.date}`
           );
 
+          // TODO :: if customer is onmo
           // const kimaiResponse = await sendTimeSheetRecordToKimai(
           //   element.email,
           //   element.authToken,
           //   JSON.stringify(kimaiRecord)
           // );
+
+          // TODO :: Update record for kimai ID
 
           // console.log("Created - Kimai API Response", kimaiResponse);
         } else if (
@@ -97,45 +100,50 @@ export const handler = async (event) => {
             `No action needed for name: ${updatedItem.name} and Date: ${updatedItem.date}`
           );
         }
-      } catch (error) {
-        console.error("Error processing record:", error);
+      } else if (record.eventName === "CREATE") {
+        // Extract the updated item from the record
+        const createdItem = unmarshallOutput(record.dynamodb.NewImage, []);
+
+        const { begin, end } = getStartEndTimeStrings(createdItem.date, 10, 18);
+        const kimaiRecord = {
+          begin,
+          end,
+          name: createdItem.name,
+          email: createdItem.email,
+          authToken: createdItem.apiToken,
+          project: createdItem.projectId,
+          activity: createdItem.activityId,
+          description: createdItem.description,
+        };
+        console.log("Kimai Record Body", kimaiRecord);
+        await putSingleItemDynamoDB({
+          TableName: DynamoDBTableNames.BackOfficeTimeSheetDynamoTable,
+          Item: createdItem,
+        });
+        console.log(
+          `Created new record for name: ${createdItem.name} and Date: ${createdItem.date}`
+        );
+
+        // TODO :: if customer is onmo
+
+        // const kimaiResponse = await sendTimeSheetRecordToKimai(
+        //   element.email,
+        //   element.authToken,
+        //   JSON.stringify(kimaiRecord)
+        // );
+        // console.log("Created - Kimai API Response", kimaiResponse);
+
+        // TODO :: Update record for kimai ID
+
+        // Check if the date exists in the DynamoDB table for the editor
+        const params = {
+          TableName: DynamoDBTableNames.BackOfficeTimeSheetDynamoTable,
+          Key: { name: createdItem.name, date: createdItem.date },
+        };
+        console.log(params);
       }
-    } else if (record.eventName === "CREATE") {
-      // Extract the updated item from the record
-      const createdItem = unmarshallOutput(record.dynamodb.NewImage, []);
-
-      const { begin, end } = getStartEndTimeStrings(createdItem.date, 10, 18);
-      const kimaiRecord = {
-        begin,
-        end,
-        name: createdItem.name,
-        email: createdItem.email,
-        authToken: createdItem.apiToken,
-        project: createdItem.projectId,
-        activity: createdItem.activityId,
-        description: createdItem.description,
-      };
-      console.log("Kimai Record Body", kimaiRecord);
-      await putSingleItemDynamoDB({
-        TableName: DynamoDBTableNames.BackOfficeTimeSheetDynamoTable,
-        Item: createdItem,
-      });
-      console.log(
-        `Created new record for name: ${createdItem.name} and Date: ${createdItem.date}`
-      );
-
-      // const kimaiResponse = await sendTimeSheetRecordToKimai(
-      //   element.email,
-      //   element.authToken,
-      //   JSON.stringify(kimaiRecord)
-      // );
-      // console.log("Created - Kimai API Response", kimaiResponse);
-      // Check if the date exists in the DynamoDB table for the editor
-      const params = {
-        TableName: DynamoDBTableNames.BackOfficeTimeSheetDynamoTable,
-        Key: { name: createdItem.name, date: createdItem.date },
-      };
-      console.log(params);
     }
+  } catch (error) {
+    console.log(error);
   }
 };
