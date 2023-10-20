@@ -41,7 +41,7 @@ const serverlessConfiguration: ServerlessFrameworkConfiguration = {
         local: "",
       },
       sync: {
-        mode: "${strToBool('${ssm:/back-office/notion/teamDirectoryDb/${self:custom.stage}}')}",
+        mode: "${strToBool(${ssm:/back-office/notion-sync/scheduler/mode/${self:custom.stage}})}",
       },
     },
     // cloudfrontInvalidate: [
