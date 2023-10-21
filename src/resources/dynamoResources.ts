@@ -26,6 +26,10 @@ export const BackOfficeTimeSheetDynamoTable: AWSDynamoDBTable = {
         AttributeName: "nameDateTimestamp",
         AttributeType: "S",
       },
+      {
+        AttributeName: "date",
+        AttributeType: "S",
+      },
     ],
     KeySchema: [
       {
@@ -47,6 +51,22 @@ export const BackOfficeTimeSheetDynamoTable: AWSDynamoDBTable = {
           },
           {
             AttributeName: "dateTimestamp",
+            KeyType: "RANGE",
+          },
+        ],
+        Projection: {
+          ProjectionType: "ALL",
+        },
+      },
+      {
+        IndexName: DynamoDBTableNames.CustomerDateIndex,
+        KeySchema: [
+          {
+            AttributeName: "customer",
+            KeyType: "HASH",
+          },
+          {
+            AttributeName: "date",
             KeyType: "RANGE",
           },
         ],
