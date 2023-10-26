@@ -1,4 +1,5 @@
 import fetch from "node-fetch";
+import { getDDevUserNames, queryDatabase } from "./notionUtils";
 
 const KIMAI_CLOUD_BASE_URL = "https://elevationservices.kimai.cloud/api";
 const KIMAI_CLOUD_TIMESHEET_ENDPOINT = KIMAI_CLOUD_BASE_URL + "/timesheets";
@@ -25,4 +26,33 @@ export const sendTimeSheetRecordToKimai = async (
   }
 
   return await response.json();
+};
+
+export const getDevsKimaiData = async (devName: string, databaseId: string) => {
+  try {
+    const ddevUsers = await getDDevUserNames();
+
+    const findUserIndex = ddevUsers.findIndex((item) => item.name === devName);
+
+    if (findUserIndex === -1) {
+      throw new Error("User name not found");
+    }
+
+    const findUserId = ddevUsers[findUserIndex].rowId;
+
+    const devsKimaiData = await queryDatabase(
+      databaseId,
+      ["Name", "Email", "API token", "Activity Id", "Project Id", "User Name"],
+      {
+        property: "User Name",
+        relation: {
+          contains: findUserId,
+        },
+      }
+    );
+
+    return devsKimaiData[0];
+  } catch (error) {
+    console.error("Error while getting dev's kimai data", error, devName);
+  }
 };

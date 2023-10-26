@@ -22,7 +22,7 @@ export const syncNotionToDynamo: AwsFunction = {
       schedule: {
         name: `notionSync-${env.STAGE}`,
         enabled: "${self:custom.notion.sync.mode}" as any,
-        rate: "cron(* 12 * * ? *)",
+        rate: "cron(* 0/12 * * ? *)",
       },
     },
   ],

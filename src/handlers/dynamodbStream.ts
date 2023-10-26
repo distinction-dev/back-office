@@ -12,7 +12,10 @@ import { GetItemCommandInput } from "@aws-sdk/client-dynamodb";
 import { sendBatchSQSMessage } from "@lib/resources/sqs";
 import { v4 as uuid } from "uuid";
 
-// import { sendTimeSheetRecordToKimai } from "src/utils/kimaiUtils";
+import {
+  sendTimeSheetRecordToKimai,
+  getDevsKimaiData,
+} from "src/utils/kimaiUtils";
 
 const getStartEndTimeStrings = (
   date: string,
@@ -121,18 +124,39 @@ export const handler = async (event: DynamoDBStreamEvent) => {
         // Extract the updated item from the record
         const createdItem = unmarshall(record.dynamodb.NewImage as any);
 
-        const { begin, end } = getStartEndTimeStrings(createdItem.date, 10, 18);
-        const kimaiRecord = {
-          begin,
-          end,
-          name: createdItem.name,
-          email: createdItem.email,
-          authToken: createdItem.apiToken,
-          project: createdItem.projectId,
-          activity: createdItem.activityId,
-          description: createdItem.description,
-        };
-        console.log("Kimai Record Body", kimaiRecord);
+        if (createdItem.customer === "Onmo Consulting") {
+          const { begin, end } = getStartEndTimeStrings(
+            createdItem.date,
+            10,
+            18
+          );
+
+          const devsKimaiData = await getDevsKimaiData(
+            createdItem.name,
+            process.env.NOTION_DB_KIMAI_TOKENS
+          );
+
+          if (devsKimaiData) {
+            const kimaiBody = JSON.stringify({
+              begin,
+              end,
+              project: devsKimaiData.projectId,
+              activity: devsKimaiData.activityId,
+              description: "",
+            });
+            console.log("Kimai Record Body", kimaiBody);
+            //
+            if (createdItem.name === "Poojan Bhatt") {
+              const kimaiResponse = await sendTimeSheetRecordToKimai(
+                devsKimaiData.email,
+                devsKimaiData.apiToken,
+                kimaiBody
+              );
+              console.log("Kimai Response", kimaiResponse);
+            }
+          }
+        }
+
         await putSingleItemDynamoDB({
           TableName: DynamoDBTableNames.TimeSheetDynamoTable,
           Item: createdItem,
@@ -140,27 +164,6 @@ export const handler = async (event: DynamoDBStreamEvent) => {
         console.log(
           `Created new record for name: ${createdItem.name} and Date: ${createdItem.date}`
         );
-
-        // TODO :: if customer is onmo
-
-        /*
-            try {
-              const kimaiResponse = await sendTimeSheetRecordToKimai(
-                element.email,
-                element.authToken,
-                JSON.stringify(kimaiRecord)
-              );
-              // console.log("Created - Kimai API Response", kimaiResponse);
-            } catch (error) {
-              failedKimaiEntries.push({
-                element.email,
-                element.authToken,
-                JSON.stringify(kimaiRecord)
-              })
-            }
-          */
-
-        // TODO :: Update record for kimai ID
 
         // Check if the date exists in the DynamoDB table for the editor
         const params = {
