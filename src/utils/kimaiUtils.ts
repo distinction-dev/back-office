@@ -31,8 +31,11 @@ export const sendTimeSheetRecordToKimai = async (
 export const getDevsKimaiData = async (devName: string, databaseId: string) => {
   try {
     const ddevUsers = await getDDevUserNames();
+    console.log({ ddevUsers });
 
-    const findUserIndex = ddevUsers.findIndex((item) => item.name === devName);
+    const findUserIndex = ddevUsers.findIndex(
+      (item) => item.name?.trim() === devName?.trim()
+    );
 
     if (findUserIndex === -1) {
       throw new Error("User name not found");

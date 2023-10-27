@@ -37,7 +37,8 @@ export const handler = async (event: DynamoDBStreamEvent) => {
   try {
     console.log({ event });
     for (const record of event.Records) {
-      console.dir({ record }, { depth: null });
+      console.log({ record });
+      console.log({ data: unmarshall(record.dynamodb.NewImage as any) });
       if (record.eventName === "MODIFY") {
         // Extract the updated item from the record
         const updatedItem = unmarshall(record.dynamodb.NewImage as any);
@@ -124,7 +125,7 @@ export const handler = async (event: DynamoDBStreamEvent) => {
         // Extract the updated item from the record
         const createdItem = unmarshall(record.dynamodb.NewImage as any);
 
-        console.dir({ createdItem }, { depth: null });
+        console.log({ createdItem });
 
         if (createdItem.customer === "Onmo Consulting") {
           const { begin, end } = getStartEndTimeStrings(
@@ -133,26 +134,29 @@ export const handler = async (event: DynamoDBStreamEvent) => {
             18
           );
 
-          if (createdItem.name === "Poojan Bhatt") {
+          if (
+            createdItem.name?.trim()?.toLowerCase() ===
+            "Poojan Bhatt".toLowerCase()
+          ) {
             const devsKimaiData = await getDevsKimaiData(
-              createdItem.name,
+              createdItem.name?.trim(),
               process.env.NOTION_DB_KIMAI_TOKENS
             );
-            console.dir({ devsKimaiData }, { depth: null });
+            console.log({ devsKimaiData });
 
             if (devsKimaiData) {
               const kimaiBody = JSON.stringify({
                 begin,
                 end,
-                project: devsKimaiData.projectId,
-                activity: devsKimaiData.activityId,
+                project: devsKimaiData.projectId?.toString()?.trim(),
+                activity: devsKimaiData.activityId?.toString()?.trim(),
                 description: "",
               });
               console.log("Kimai Record Body", kimaiBody);
 
               const kimaiResponse = await sendTimeSheetRecordToKimai(
-                devsKimaiData.email,
-                devsKimaiData.apiToken,
+                devsKimaiData.email?.trim(),
+                devsKimaiData.apiToken?.trim(),
                 kimaiBody
               );
               console.log("Kimai Response", kimaiResponse);
