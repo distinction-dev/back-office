@@ -131,22 +131,22 @@ export const handler = async (event: DynamoDBStreamEvent) => {
             18
           );
 
-          const devsKimaiData = await getDevsKimaiData(
-            createdItem.name,
-            process.env.NOTION_DB_KIMAI_TOKENS
-          );
+          if (createdItem.name === "Poojan Bhatt") {
+            const devsKimaiData = await getDevsKimaiData(
+              createdItem.name,
+              process.env.NOTION_DB_KIMAI_TOKENS
+            );
 
-          if (devsKimaiData) {
-            const kimaiBody = JSON.stringify({
-              begin,
-              end,
-              project: devsKimaiData.projectId,
-              activity: devsKimaiData.activityId,
-              description: "",
-            });
-            console.log("Kimai Record Body", kimaiBody);
-            //
-            if (createdItem.name === "Poojan Bhatt") {
+            if (devsKimaiData) {
+              const kimaiBody = JSON.stringify({
+                begin,
+                end,
+                project: devsKimaiData.projectId,
+                activity: devsKimaiData.activityId,
+                description: "",
+              });
+              console.log("Kimai Record Body", kimaiBody);
+
               const kimaiResponse = await sendTimeSheetRecordToKimai(
                 devsKimaiData.email,
                 devsKimaiData.apiToken,

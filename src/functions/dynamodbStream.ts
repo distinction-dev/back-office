@@ -11,6 +11,8 @@ export const dynamodbStream: AwsFunction = {
       "${self:custom.notion.NOTION_DB_KIMAI_TOKENS.${self:custom.stage}}",
     NOTION_DB_TEAM_DIRECTORY:
       "${self:custom.notion.NOTION_DB_TEAM_DIRECTORY.${self:custom.stage}}",
+    NOTION_AUTH_TOKEN:
+      "${self:custom.notion.NOTION_AUTH_TOKEN.${self:custom.stage}}",
   },
   events: [
     {
