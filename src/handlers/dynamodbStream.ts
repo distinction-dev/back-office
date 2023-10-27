@@ -37,7 +37,7 @@ export const handler = async (event: DynamoDBStreamEvent) => {
   try {
     console.log({ event });
     for (const record of event.Records) {
-      console.log({ record });
+      console.dir({ record }, { depth: null });
       if (record.eventName === "MODIFY") {
         // Extract the updated item from the record
         const updatedItem = unmarshall(record.dynamodb.NewImage as any);
@@ -124,6 +124,8 @@ export const handler = async (event: DynamoDBStreamEvent) => {
         // Extract the updated item from the record
         const createdItem = unmarshall(record.dynamodb.NewImage as any);
 
+        console.dir({ createdItem }, { depth: null });
+
         if (createdItem.customer === "Onmo Consulting") {
           const { begin, end } = getStartEndTimeStrings(
             createdItem.date,
@@ -136,6 +138,7 @@ export const handler = async (event: DynamoDBStreamEvent) => {
               createdItem.name,
               process.env.NOTION_DB_KIMAI_TOKENS
             );
+            console.dir({ devsKimaiData }, { depth: null });
 
             if (devsKimaiData) {
               const kimaiBody = JSON.stringify({
