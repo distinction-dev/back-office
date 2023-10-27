@@ -134,33 +134,28 @@ export const handler = async (event: DynamoDBStreamEvent) => {
             18
           );
 
-          if (
-            createdItem.name?.trim()?.toLowerCase() ===
-            "Poojan Bhatt".toLowerCase()
-          ) {
-            const devsKimaiData = await getDevsKimaiData(
-              createdItem.name?.trim(),
-              process.env.NOTION_DB_KIMAI_TOKENS
+          const devsKimaiData = await getDevsKimaiData(
+            createdItem.name?.trim(),
+            process.env.NOTION_DB_KIMAI_TOKENS
+          );
+          console.log({ devsKimaiData });
+
+          if (devsKimaiData) {
+            const kimaiBody = JSON.stringify({
+              begin,
+              end,
+              project: devsKimaiData.projectId?.toString()?.trim(),
+              activity: devsKimaiData.activityId?.toString()?.trim(),
+              description: "",
+            });
+            console.log("Kimai Record Body", kimaiBody);
+
+            const kimaiResponse = await sendTimeSheetRecordToKimai(
+              devsKimaiData.email?.trim(),
+              devsKimaiData.apiToken?.trim(),
+              kimaiBody
             );
-            console.log({ devsKimaiData });
-
-            if (devsKimaiData) {
-              const kimaiBody = JSON.stringify({
-                begin,
-                end,
-                project: devsKimaiData.projectId?.toString()?.trim(),
-                activity: devsKimaiData.activityId?.toString()?.trim(),
-                description: "",
-              });
-              console.log("Kimai Record Body", kimaiBody);
-
-              const kimaiResponse = await sendTimeSheetRecordToKimai(
-                devsKimaiData.email?.trim(),
-                devsKimaiData.apiToken?.trim(),
-                kimaiBody
-              );
-              console.log("Kimai Response", kimaiResponse);
-            }
+            console.log("Kimai Response", kimaiResponse);
           }
         }
 
