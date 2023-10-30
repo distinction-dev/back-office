@@ -57,5 +57,6 @@ export const getDevsKimaiData = async (devName: string, databaseId: string) => {
     return devsKimaiData[0];
   } catch (error) {
     console.error("Error while getting dev's kimai data", error, devName);
+    return null;
   }
 };
