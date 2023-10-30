@@ -139,23 +139,31 @@ export const handler = async (event: DynamoDBStreamEvent) => {
             process.env.NOTION_DB_KIMAI_TOKENS
           );
           console.log({ devsKimaiData });
+          const kimaiBody = JSON.stringify({
+            begin,
+            end,
+            project: devsKimaiData.projectId?.toString()?.trim(),
+            activity: devsKimaiData.activityId?.toString()?.trim(),
+            description: "",
+          });
+          console.log("Kimai Record Body", kimaiBody);
 
           if (devsKimaiData) {
-            const kimaiBody = JSON.stringify({
-              begin,
-              end,
-              project: devsKimaiData.projectId?.toString()?.trim(),
-              activity: devsKimaiData.activityId?.toString()?.trim(),
-              description: "",
-            });
-            console.log("Kimai Record Body", kimaiBody);
-
-            const kimaiResponse = await sendTimeSheetRecordToKimai(
-              devsKimaiData.email?.trim(),
-              devsKimaiData.apiToken?.trim(),
-              kimaiBody
-            );
-            console.log("Kimai Response", kimaiResponse);
+            try {
+              const kimaiResponse = await sendTimeSheetRecordToKimai(
+                devsKimaiData.email?.trim(),
+                devsKimaiData.apiToken?.trim(),
+                kimaiBody
+              );
+              console.log("Kimai Response", kimaiResponse);
+            } catch (error) {
+              console.log("Kimai Error:", error);
+              failedKimaiEntries.push({
+                email: devsKimaiData.email?.trim(),
+                apiToken: devsKimaiData.apiToken?.trim(),
+                body: JSON.stringify(kimaiBody),
+              });
+            }
           }
         }
 
@@ -176,7 +184,7 @@ export const handler = async (event: DynamoDBStreamEvent) => {
       }
     }
   } catch (error) {
-    console.log(error);
+    console.log("Error:", error);
     if (failedKimaiEntries.length) {
       await sendBatchSQSMessage({
         QueueUrl: process.env.FAILED_KIMAI_ENTRIES_SQS_URL,
