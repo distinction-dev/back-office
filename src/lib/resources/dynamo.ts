@@ -19,7 +19,7 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 
 export const client = new DynamoDBClient({
-  region: process.env.AWS_REGION || "eu-west-1",
+  region: process.env.AWS_REGION || "ap-south-1",
   apiVersion: "latest",
 });
 
