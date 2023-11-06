@@ -60,3 +60,18 @@ export const getDevsKimaiData = async (devName: string, databaseId: string) => {
     return null;
   }
 };
+
+export const getKimaiRecordStartEndTimeStrings = (
+  date: string,
+  start_hours: number,
+  end_hours: number
+) => {
+  const startTime = new Date(date);
+  startTime.setHours(start_hours);
+  const endTime = new Date(date);
+  endTime.setHours(end_hours);
+  return {
+    begin: startTime.toISOString().slice(0, -5),
+    end: endTime.toISOString().slice(0, -5),
+  };
+};
