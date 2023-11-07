@@ -1,11 +1,10 @@
 import { timeSheetUploadCSV, timeSheetUploadUserData } from "./timeSheetReport";
-import { kimaiScheduler, syncNotionToDynamo } from "./kimaiEntry";
+import { syncNotionToDynamo } from "./syncNotionToDynamo";
 import { dynamodbStream } from "./dynamodbStream";
 
 export const functions = {
   timeSheetUploadCSV,
   timeSheetUploadUserData,
-  kimaiScheduler,
   syncNotionToDynamo,
   dynamodbStream,
 };

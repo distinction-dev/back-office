@@ -27,28 +27,3 @@ export const syncNotionToDynamo: AwsFunction = {
     },
   ],
 };
-
-export const kimaiScheduler: AwsFunction = {
-  handler: "src/handlers/kimaiScheduler.syncNotionDataToKimai",
-  timeout: 500,
-  memorySize: 512,
-  environment: {
-    NOTION_AUTH_TOKEN:
-      "${self:custom.notion.NOTION_AUTH_TOKEN.${self:custom.stage}}",
-    NOTION_DB_KIMAI_TOKENS:
-      "${self:custom.notion.NOTION_DB_KIMAI_TOKENS.${self:custom.stage}}",
-    NOTION_DB_PRODUCTIVITY_TRACKER:
-      "${self:custom.notion.NOTION_DB_PRODUCTIVITY_TRACKER.${self:custom.stage}}",
-    NOTION_DB_TEAM_DIRECTORY:
-      "${self:custom.notion.NOTION_DB_TEAM_DIRECTORY.${self:custom.stage}}",
-  },
-  events: [
-    {
-      http: {
-        path: "/api/kimai/entries",
-        method: "POST",
-        cors: true,
-      },
-    },
-  ],
-};
