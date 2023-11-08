@@ -32,7 +32,7 @@ export const handler: APIGatewayProxyHandler = async (): Promise<any> => {
 
     console.log("uniqueNameListWickes", uniqueNameListWickes);
 
-    response(200, {
+    return response(200, {
       names: uniqueNameListWickes,
     });
   } catch (error) {

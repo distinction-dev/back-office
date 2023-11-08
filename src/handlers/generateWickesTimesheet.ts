@@ -3,7 +3,6 @@ import { APIGatewayEvent, APIGatewayProxyHandler } from "aws-lambda";
 
 import {
   getCurrentDate,
-  getFirstDateOfMonth,
   getWickesTimeSheetFileName,
   transformNotionDate,
 } from "src/utils/dateUtils";
@@ -37,7 +36,7 @@ export const handler: APIGatewayProxyHandler = async (
         FilterExpression: "name = :devName",
         ExpressionAttributeValues: {
           ":cust": constant.WICKES_CUSTOMER,
-          ":startDate": getFirstDateOfMonth(),
+          ":startDate": "2023-10-01",
           ":endDate": getCurrentDate(),
           ":devName": wickesUser,
         },
