@@ -12,6 +12,10 @@ import { writeWickesCSVFile } from "src/utils/csvHandler";
 import { queryDynamoDBTable } from "@lib/resources/dynamo";
 import { getPreSignedUrl, uploadFile } from "@lib/resources/s3";
 import { BucketNames, DynamoDBTableNames } from "src/resources/constants";
+import { sendEmail } from "src/utils/emailUtils";
+
+const EMAIL_FROM_ADDRESS = "jay@distinction.dev";
+const EMAIL_TO_ADDRESS = "poojan@distinction.dev";
 
 export const handler: APIGatewayProxyHandler = async (
   event: APIGatewayEvent
@@ -70,6 +74,8 @@ export const handler: APIGatewayProxyHandler = async (
       getWickesTimeSheetFileName(),
       bufferData
     );
+
+    await sendEmail(EMAIL_FROM_ADDRESS, EMAIL_TO_ADDRESS);
 
     return response(200, {
       url: await getPreSignedUrl(
