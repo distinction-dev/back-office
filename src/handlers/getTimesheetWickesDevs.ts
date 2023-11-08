@@ -15,8 +15,8 @@ export const handler: APIGatewayProxyHandler = async (): Promise<any> => {
         "customer = :cust AND #date BETWEEN :startDate AND :endDate",
       ExpressionAttributeValues: {
         ":cust": constant.WICKES_CUSTOMER,
-        startDate: getFirstDateOfMonth(),
-        endDate: getCurrentDate(),
+        ":startDate": getFirstDateOfMonth(),
+        ":endDate": getCurrentDate(),
       },
       ExpressionAttributeNames: {
         "#date": "date",
