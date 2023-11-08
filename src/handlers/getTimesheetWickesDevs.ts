@@ -5,7 +5,7 @@ import { DynamoDBTableNames } from "src/resources/constants";
 import { response } from "@lib/resources/api-gateway";
 import { queryDynamoDBTable } from "@lib/resources/dynamo";
 import { onlyUnique, polishData } from "src/utils/arrayUtils";
-import { getCurrentDate, getFirstDateOfMonth } from "src/utils/dateUtils";
+import { getCurrentDate } from "src/utils/dateUtils";
 
 export const handler: APIGatewayProxyHandler = async (): Promise<any> => {
   try {
@@ -16,7 +16,7 @@ export const handler: APIGatewayProxyHandler = async (): Promise<any> => {
         "customer = :cust AND #date BETWEEN :startDate AND :endDate",
       ExpressionAttributeValues: {
         ":cust": constant.WICKES_CUSTOMER,
-        ":startDate": getFirstDateOfMonth(),
+        ":startDate": "2023-10-01",
         ":endDate": getCurrentDate(),
       },
       ExpressionAttributeNames: {
