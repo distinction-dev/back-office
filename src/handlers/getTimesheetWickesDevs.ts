@@ -11,6 +11,7 @@ export const handler: APIGatewayProxyHandler = async (): Promise<any> => {
   try {
     const wickesUserRecords = await queryDynamoDBTable({
       TableName: DynamoDBTableNames.TimeSheetDynamoTable,
+      IndexName: DynamoDBTableNames.CustomerDateIndex,
       KeyConditionExpression:
         "customer = :cust AND #date BETWEEN :startDate AND :endDate",
       ExpressionAttributeValues: {

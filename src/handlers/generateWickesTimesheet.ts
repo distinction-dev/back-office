@@ -31,6 +31,7 @@ export const handler: APIGatewayProxyHandler = async (
 
       const tableResponse = await queryDynamoDBTable({
         TableName: DynamoDBTableNames.TimeSheetDynamoTable,
+        IndexName: DynamoDBTableNames.CustomerDateIndex,
         KeyConditionExpression:
           "customer = :cust AND #date BETWEEN :startDate AND :endDate",
         FilterExpression: "name = :devName",
