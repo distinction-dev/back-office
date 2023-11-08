@@ -33,7 +33,7 @@ export const handler: APIGatewayProxyHandler = async (
         IndexName: DynamoDBTableNames.CustomerDateIndex,
         KeyConditionExpression:
           "customer = :cust AND #date BETWEEN :startDate AND :endDate",
-        FilterExpression: "name = :devName",
+        FilterExpression: "#devName = :devName",
         ExpressionAttributeValues: {
           ":cust": constant.WICKES_CUSTOMER,
           ":startDate": "2023-10-01",
@@ -42,6 +42,7 @@ export const handler: APIGatewayProxyHandler = async (
         },
         ExpressionAttributeNames: {
           "#date": "date",
+          "#devName": "name",
         },
       });
 
