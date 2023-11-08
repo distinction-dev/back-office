@@ -6,6 +6,11 @@ export const getFirstDateOfMonth = () => {
   return dt.toISOString().slice(0, 10);
 };
 
+export const getCurrentDate = () => {
+  const dt = new Date();
+  return dt.toISOString().slice(0, 10);
+};
+
 export const transformNotionDate = (notionDate: string, format: string) => {
   return moment(notionDate, "YYYY-MM-DD").format(format);
 };

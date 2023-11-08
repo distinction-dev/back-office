@@ -1,10 +1,13 @@
-import { timeSheetUploadCSV, timeSheetUploadUserData } from "./timeSheetReport";
+import {
+  getTimesheetWickesDevs,
+  generateWickesTimesheet,
+} from "./timeSheetReport";
 import { syncNotionToDynamo } from "./syncNotionToDynamo";
 import { dynamodbStream } from "./dynamodbStream";
 
 export const functions = {
-  timeSheetUploadCSV,
-  timeSheetUploadUserData,
+  getTimesheetWickesDevs,
+  generateWickesTimesheet,
   syncNotionToDynamo,
   dynamodbStream,
 };
