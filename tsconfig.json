@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["ESNext"],
+    "lib": ["ESNext", "ES2020"],
     "moduleResolution": "node",
     "noUnusedLocals": true,
     "noUnusedParameters": true,

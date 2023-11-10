@@ -2,7 +2,7 @@ import aws from "aws-sdk";
 import env from "@lib/env";
 import constant from "./constant";
 import * as nodemailer from "nodemailer";
-import * as handlebars from "express-handlebars";
+import * as handlebars from "handlebars";
 import hbs from "nodemailer-express-handlebars";
 import { readFile } from "fs/promises";
 
@@ -22,7 +22,8 @@ const transporter = nodemailer.createTransport({
 
 const templateName = constant.EMAIL_TEMPLATE.SEND_DOCUMENT;
 
-const viewEngine = handlebars.create({
+const viewEngine = handlebars.create();
+viewEngine.template({
   partialsDir: constant.TEMPLATES_DIRECTORY,
   defaultLayout: false,
 });
