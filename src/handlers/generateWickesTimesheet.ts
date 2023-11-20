@@ -14,7 +14,6 @@ import { getPreSignedUrl } from "@lib/resources/s3";
 import { BucketNames, DynamoDBTableNames } from "src/resources/constants";
 import { sendEmailWithAttachment } from "@lib/resources/ses";
 
-// const EMAIL_FROM_ADDRESS = "jay@distinction.dev";
 const EMAIL_TO_ADDRESS = "poojan@distinction.dev";
 
 export const handler: APIGatewayProxyHandler = async (
