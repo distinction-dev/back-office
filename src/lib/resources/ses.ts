@@ -2,14 +2,12 @@ import AWS from "aws-sdk";
 import env from "@lib/env";
 import { promises as fsPromises } from "fs";
 
-const region = process.env.AWS_REGION || "ap-south-1";
-
-const ses = new AWS.SES({ region });
+const ses = new AWS.SES({ region: process.env.AWS_REGION || "ap-south-1" });
 
 const SES_EMAIL_SENDER = "jay@distinction.dev";
 
 // eslint-disable-next-line max-len
-export const SES_ARN = `arn:aws:ses:${region}:${env.AWS_ACCOUNT_ID}:identity/${SES_EMAIL_SENDER}`;
+export const SES_ARN = `arn:aws:ses:ap-south-1:${env.AWS_ACCOUNT_ID}:identity/${SES_EMAIL_SENDER}`;
 
 export const sendEmailWithAttachment = async (
   destination: string,
@@ -27,7 +25,7 @@ export const sendEmailWithAttachment = async (
     const base64Data: string = attachmentContent.toString("base64");
 
     // Create the email params
-    const params: AWS.SES.SendRawEmailRequest = {
+    const params = {
       Source: SES_EMAIL_SENDER,
       Destinations: [destination],
       RawMessage: {
