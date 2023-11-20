@@ -12,7 +12,6 @@ import { writeWickesCSVFile } from "src/utils/csvHandler";
 import { queryDynamoDBTable } from "@lib/resources/dynamo";
 import { getPreSignedUrl } from "@lib/resources/s3";
 import { BucketNames, DynamoDBTableNames } from "src/resources/constants";
-// import { sendEmail } from "src/utils/emailUtils";
 import { sendEmailWithAttachment } from "@lib/resources/ses";
 
 // const EMAIL_FROM_ADDRESS = "jay@distinction.dev";
