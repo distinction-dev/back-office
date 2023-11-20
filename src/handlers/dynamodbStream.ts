@@ -8,6 +8,8 @@ import {
   sendTimeSheetRecordToKimai,
   getKimaiRecordStartEndTimeStrings,
 } from "src/utils/kimaiUtils";
+import { putSingleItemDynamoDB } from "@lib/resources/dynamo";
+import { DynamoDBTableNames } from "src/resources/constants";
 
 export const handler = async (event: DynamoDBStreamEvent) => {
   const failedKimaiEntries = [];
@@ -19,21 +21,28 @@ export const handler = async (event: DynamoDBStreamEvent) => {
         data: unmarshall(record.dynamodb.NewImage as any),
       });
 
-      if (record.eventName === "INSERT") {
-        // Extract the updated item from the record
-        const createdItem = unmarshall(record.dynamodb.NewImage as any);
+      // Extract the updated item from the record
+      const recordItem = unmarshall(record.dynamodb.NewImage as any);
 
-        console.log("Created Item", { createdItem });
+      console.log("Created Item", { recordItem });
 
-        if (createdItem.customer === "Onmo Consulting") {
+      const shouldRunKimaiProcess =
+        record.eventName === "INSERT" ||
+        (record.eventName === "MODIFY" &&
+          (recordItem.kimaiId === undefined || !("kimaiId" in recordItem)));
+
+      console.log("Should Run Kimai Process", shouldRunKimaiProcess);
+
+      if (shouldRunKimaiProcess) {
+        if (recordItem.customer === "Onmo Consulting") {
           const { begin, end } = getKimaiRecordStartEndTimeStrings(
-            createdItem.date,
+            recordItem.date,
             10,
             18
           );
 
           const devsKimaiData = await getDevsKimaiData(
-            createdItem.name?.trim(),
+            recordItem.name?.trim(),
             process.env.NOTION_DB_KIMAI_TOKENS
           );
 
@@ -56,6 +65,17 @@ export const handler = async (event: DynamoDBStreamEvent) => {
                 kimaiBody
               );
               console.log("Kimai Response", kimaiResponse);
+
+              if (kimaiResponse.id) {
+                const putResponse = await putSingleItemDynamoDB({
+                  TableName: DynamoDBTableNames.TimeSheetDynamoTable,
+                  Item: {
+                    ...recordItem,
+                    kimaiId: { S: kimaiResponse?.id },
+                  },
+                });
+                console.log("stored kimai id in dynamo db item", putResponse);
+              }
             } catch (error) {
               console.log("Kimai Error:", error);
               failedKimaiEntries.push({

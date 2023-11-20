@@ -25,7 +25,7 @@ export const sendTimeSheetRecordToKimai = async (
     throw new Error(message);
   }
 
-  return await response.json();
+  return (await response.json()) as any;
 };
 
 export const getDevsKimaiData = async (devName: string, databaseId: string) => {

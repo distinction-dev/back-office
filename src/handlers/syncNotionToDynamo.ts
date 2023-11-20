@@ -49,15 +49,19 @@ const fetchNotionData = async () => {
         }
       );
 
-      const modifiedRecords = records.map((record) => ({
-        name: ddevUser.name,
-        dateTimestamp: `${dayjs(record.date, "YYYY-MM-DD").unix()}`,
-        nameDateTimestamp: `${dayjs(record.date, "YYYY-MM-DD").unix()}_${
-          ddevUser.name
-        }`,
-        id: record.rowId,
-        ...record,
-      }));
+      const modifiedRecords = records
+        .filter(
+          (record) => record.date && record.description && record.customer
+        )
+        .map((record) => ({
+          name: ddevUser.name,
+          dateTimestamp: `${dayjs(record.date, "YYYY-MM-DD").unix()}`,
+          nameDateTimestamp: `${dayjs(record.date, "YYYY-MM-DD").unix()}_${
+            ddevUser.name
+          }`,
+          id: record.rowId,
+          ...record,
+        }));
 
       finalResult = [...finalResult, ...modifiedRecords];
     }
