@@ -1,9 +1,15 @@
 import AWS from "aws-sdk";
+import env from "@lib/env";
 import { promises as fsPromises } from "fs";
 
-const ses = new AWS.SES({ region: process.env.AWS_REGION || "ap-south-1" });
+const region = process.env.AWS_REGION || "ap-south-1";
 
-export const SES_EMAIL_SENDER = "jay@distinction.dev";
+const ses = new AWS.SES({ region });
+
+const SES_EMAIL_SENDER = "jay@distinction.dev";
+
+// eslint-disable-next-line max-len
+export const SES_ARN = `arn:aws:ses:${region}:${env.AWS_ACCOUNT_ID}:identity/${SES_EMAIL_SENDER}`;
 
 export const sendEmailWithAttachment = async (
   destination: string,

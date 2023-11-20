@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { functions } from "@functions/index";
 import env from "@lib/env";
-import { SES_EMAIL_SENDER } from "@lib/resources/ses";
+import { SES_ARN } from "@lib/resources/ses";
 import { ServerlessFrameworkConfiguration } from "serverless-schema";
 import { BackOfficeResources } from "src/resources";
 
@@ -116,7 +116,7 @@ const serverlessConfiguration: ServerlessFrameworkConfiguration = {
       {
         Effect: "Allow",
         Action: ["ses:SendRawEmail"],
-        Resource: `arn:aws:ses:REGION:ACCOUNT_ID:identity/${SES_EMAIL_SENDER}`,
+        Resource: SES_ARN,
       },
     ],
   },
