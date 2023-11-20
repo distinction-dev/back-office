@@ -1,8 +1,9 @@
-import AWS from "aws-sdk";
-import env from "@lib/env";
+import { SESClient, SendRawEmailCommand } from "@aws-sdk/client-ses";
 import { promises as fsPromises } from "fs";
 
-const ses = new AWS.SES({ region: process.env.AWS_REGION || "ap-south-1" });
+import env from "@lib/env";
+
+const ses = new SESClient({ region: process.env.AWS_REGION || "ap-south-1" });
 
 const SES_EMAIL_SENDER = "jay@distinction.dev";
 
@@ -25,17 +26,23 @@ export const sendEmailWithAttachment = async (
     const base64Data: string = attachmentContent.toString("base64");
 
     // Create the email params
+    // eslint-disable-next-line max-len
+    const messageData = `From: ${SES_EMAIL_SENDER}\nTo: ${destination}\nSubject: ${subject}\nMIME-Version: 1.0\nContent-Type: multipart/mixed; boundary="aRandomBoundaryString"\n\n--aRandomBoundaryString\nContent-Type: text/plain; charset=us-ascii\n\n${bodyText}\n\n--aRandomBoundaryString\nContent-Type: text/csv\nContent-Disposition: attachment; filename="${attachmentFileName}"\nContent-Transfer-Encoding: base64\n\n${base64Data}\n\n--aRandomBoundaryString--`;
+
+    // Convert the message data to a Uint8Array
+    const messageDataUint8 = new TextEncoder().encode(messageData);
+
+    // Create the email params with Uint8Array data
     const params = {
       Source: SES_EMAIL_SENDER,
       Destinations: [destination],
       RawMessage: {
-        // eslint-disable-next-line max-len
-        Data: `From: ${SES_EMAIL_SENDER}\nTo: ${destination}\nSubject: ${subject}\nMIME-Version: 1.0\nContent-Type: multipart/mixed; boundary="aRandomBoundaryString"\n\n--aRandomBoundaryString\nContent-Type: text/plain; charset=us-ascii\n\n${bodyText}\n\n--aRandomBoundaryString\nContent-Type: text/csv\nContent-Disposition: attachment; filename="${attachmentFileName}"\nContent-Transfer-Encoding: base64\n\n${base64Data}\n\n--aRandomBoundaryString--`,
+        Data: messageDataUint8,
       },
     };
 
     // Send the raw email with attachment
-    await ses.sendRawEmail(params).promise();
+    await ses.send(new SendRawEmailCommand(params));
     console.log("Email sent!");
     return true;
   } catch (error) {
