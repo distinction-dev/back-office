@@ -71,7 +71,7 @@ export const handler = async (event: DynamoDBStreamEvent) => {
                   TableName: DynamoDBTableNames.TimeSheetDynamoTable,
                   Item: {
                     ...recordItem,
-                    kimaiId: { S: kimaiResponse?.id },
+                    kimaiId: kimaiResponse?.id,
                   },
                 });
                 console.log("stored kimai id in dynamo db item", putResponse);
