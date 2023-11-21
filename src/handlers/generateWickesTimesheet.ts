@@ -1,5 +1,5 @@
 import { readFile } from "fs/promises";
-import { APIGatewayEvent, APIGatewayProxyHandler } from "aws-lambda";
+import { APIGatewayProxyHandler } from "aws-lambda";
 
 import {
   getCurrentDate,
@@ -16,12 +16,12 @@ import { BucketNames, DynamoDBTableNames } from "src/resources/constants";
 import { sendEmailWithAttachment } from "@lib/resources/ses";
 
 export const handler: APIGatewayProxyHandler = async (
-  event: APIGatewayEvent
+  event: any
 ): Promise<any> => {
   try {
-    console.log("Body", event.body);
+    console.log("Event ", event);
 
-    const requestBody: any = event.body;
+    const requestBody: any = event;
     const parsedBody = JSON.parse(requestBody);
 
     const emailDestinationAddress = parsedBody.emailDestination;
