@@ -21,8 +21,7 @@ export const handler: APIGatewayProxyHandler = async (
   try {
     console.log("Event ", event);
 
-    const requestBody: any = event;
-    const parsedBody = JSON.parse(requestBody);
+    const parsedBody = event;
 
     const emailDestinationAddress = parsedBody.emailDestination;
     const wickesUserNames = Object.keys(parsedBody.form);
