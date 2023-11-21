@@ -24,6 +24,7 @@ export const handler: APIGatewayProxyHandler = async (
     const parsedBody = event;
 
     const emailDestinationAddress = parsedBody.emailDestination;
+    const wickesUserData = parsedBody.form;
     const wickesUserNames = Object.keys(parsedBody.form);
     console.log({ wickesUserNames, emailDestinationAddress });
 
@@ -53,8 +54,8 @@ export const handler: APIGatewayProxyHandler = async (
       const userRecords = tableResponse.Items.map((record) => ({
         hours: constant.WORK_HOURS,
         description: record.description,
-        ticket: parsedBody[wickesUser].ticket,
-        customer: parsedBody[wickesUser].customer,
+        ticket: wickesUserData[wickesUser].ticket,
+        customer: wickesUserData[wickesUser].customer,
         date: transformNotionDate(record.date, "DD-MM-YYYY"),
         contact:
           nameInArr.length > 1
