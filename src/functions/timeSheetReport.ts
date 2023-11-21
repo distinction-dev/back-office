@@ -40,6 +40,15 @@ export const generateWickesTimesheet: AwsFunction = {
 
 export const invokeWickesTimesheetFn: AwsFunction = {
   handler: "src/handlers/invokeWickesTimesheetFn.handler",
+  events: [
+    {
+      http: {
+        method: "POST",
+        path: "/api/invokeWickesTimesheetFn",
+        cors: true,
+      },
+    },
+  ],
   environment: {
     NOTION_AUTH_TOKEN:
       "${self:custom.notion.NOTION_AUTH_TOKEN.${self:custom.stage}}",
