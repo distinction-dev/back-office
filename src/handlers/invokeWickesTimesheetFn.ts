@@ -18,7 +18,7 @@ export const handler: APIGatewayProxyHandler = async (
   const params = {
     FunctionName: FunctionArns.generateWickesTimesheet,
     InvocationType: "Event" as InvocationType,
-    Payload: JSON.stringify(event.body),
+    Payload: event.body,
   };
 
   try {

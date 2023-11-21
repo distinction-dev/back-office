@@ -19,6 +19,8 @@ export const handler: APIGatewayProxyHandler = async (
   event: APIGatewayEvent
 ): Promise<any> => {
   try {
+    console.log("Body", event.body);
+
     const requestBody: any = event.body;
     const parsedBody = JSON.parse(requestBody);
 
