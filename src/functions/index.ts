@@ -1,6 +1,7 @@
 import {
   getTimesheetWickesDevs,
   generateWickesTimesheet,
+  invokeWickesTimesheetFn,
 } from "./timeSheetReport";
 import { syncNotionToDynamo } from "./syncNotionToDynamo";
 import { dynamodbStream } from "./dynamodbStream";
@@ -10,4 +11,5 @@ export const functions = {
   generateWickesTimesheet,
   syncNotionToDynamo,
   dynamodbStream,
+  invokeWickesTimesheetFn,
 };

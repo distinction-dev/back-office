@@ -4,6 +4,7 @@ import env from "@lib/env";
 import { SES_ARN } from "@lib/resources/ses";
 import { ServerlessFrameworkConfiguration } from "serverless-schema";
 import { BackOfficeResources } from "src/resources";
+import { FunctionArns } from "src/resources/constants";
 
 const serverlessConfiguration: ServerlessFrameworkConfiguration = {
   service: env.SERVICE_NAME,
@@ -117,6 +118,11 @@ const serverlessConfiguration: ServerlessFrameworkConfiguration = {
         Effect: "Allow",
         Action: ["ses:SendRawEmail"],
         Resource: SES_ARN,
+      },
+      {
+        Effect: "Allow",
+        Action: ["lambda:InvokeFunction"],
+        Resource: FunctionArns.generateWickesTimesheet,
       },
     ],
   },

@@ -1,3 +1,4 @@
+import { readFile } from "fs/promises";
 import { APIGatewayEvent, APIGatewayProxyHandler } from "aws-lambda";
 
 import {
@@ -10,11 +11,9 @@ import constant from "src/utils/constant";
 import { response } from "@lib/resources/api-gateway";
 import { writeWickesCSVFile } from "src/utils/csvHandler";
 import { queryDynamoDBTable } from "@lib/resources/dynamo";
-import { getPreSignedUrl } from "@lib/resources/s3";
+import { getPreSignedUrl, uploadFile } from "@lib/resources/s3";
 import { BucketNames, DynamoDBTableNames } from "src/resources/constants";
 import { sendEmailWithAttachment } from "@lib/resources/ses";
-
-const EMAIL_TO_ADDRESS = "poojan@distinction.dev";
 
 export const handler: APIGatewayProxyHandler = async (
   event: APIGatewayEvent
@@ -23,8 +22,9 @@ export const handler: APIGatewayProxyHandler = async (
     const requestBody: any = event.body;
     const parsedBody = JSON.parse(requestBody);
 
-    const wickesUserNames = Object.keys(parsedBody);
-    console.log({ wickesUserNames });
+    const emailDestinationAddress = parsedBody.emailDestination;
+    const wickesUserNames = Object.keys(parsedBody.form);
+    console.log({ wickesUserNames, emailDestinationAddress });
 
     let finalResult = [];
 
@@ -66,16 +66,16 @@ export const handler: APIGatewayProxyHandler = async (
 
     const outFilePath = await writeWickesCSVFile(finalResult);
 
-    // const bufferData = await readFile(outFilePath);
+    const bufferData = await readFile(outFilePath);
 
-    // await uploadFile(
-    //   BucketNames.BackOfficeTimeSheetBucket,
-    //   getWickesTimeSheetFileName(),
-    //   bufferData
-    // );
+    await uploadFile(
+      BucketNames.BackOfficeTimeSheetBucket,
+      getWickesTimeSheetFileName(),
+      bufferData
+    );
 
     await sendEmailWithAttachment(
-      EMAIL_TO_ADDRESS,
+      emailDestinationAddress,
       outFilePath,
       "Wickes Timesheet",
       ""
