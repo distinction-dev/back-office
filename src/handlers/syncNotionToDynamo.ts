@@ -1,6 +1,9 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
-import { putSingleItemDynamoDB } from "@lib/resources/dynamo";
+import {
+  getSingleItemDynamoDB,
+  putSingleItemDynamoDB,
+} from "@lib/resources/dynamo";
 import { DynamoDBTableNames } from "../resources/constants";
 import { queryDatabase, getDDevUserNames } from "src/utils/notionUtils";
 import dayjs from "dayjs";
@@ -74,6 +77,7 @@ const fetchNotionData = async () => {
 
 interface NotionRecord {
   name: string;
+  id: string;
   rowId: string;
   date: string; //Format -> yyyy-mm-dd
   dateTimestamp: Date;
@@ -101,12 +105,39 @@ export const handler = async () => {
     // Fetch data from the notion API
     const apiData: Array<NotionRecord> = await fetchNotionData();
     console.log({ apiData });
-    // Insert data into DynamoDB
     for (const item of apiData) {
-      await putSingleItemDynamoDB({
-        TableName: DynamoDBTableNames.TimeSheetDynamoTable,
-        Item: unmarshall(marshall(item, { removeUndefinedValues: true })),
-      });
+      const booleanCondition =
+        item?.name?.trim()?.toLowerCase() === "poojan bhatt" ||
+        item?.name?.trim()?.toLowerCase() === "jay motka";
+
+      console.log("booleanCondition", booleanCondition);
+
+      if (booleanCondition) {
+        const existingRecord = await getSingleItemDynamoDB({
+          TableName: DynamoDBTableNames.TimeSheetDynamoTable,
+          Key: {
+            id: item.id,
+          },
+        });
+
+        console.log("Existing Item", existingRecord);
+
+        let finalItem = existingRecord.Item
+          ? {
+              ...existingRecord.Item,
+              ...item,
+            }
+          : item;
+
+        console.log("Final Item", finalItem);
+
+        await putSingleItemDynamoDB({
+          TableName: DynamoDBTableNames.TimeSheetDynamoTable,
+          Item: unmarshall(
+            marshall(finalItem, { removeUndefinedValues: true })
+          ),
+        });
+      }
     }
   } catch (error) {
     console.error(error);
