@@ -106,38 +106,28 @@ export const handler = async () => {
     const apiData: Array<NotionRecord> = await fetchNotionData();
     console.log({ apiData });
     for (const item of apiData) {
-      const booleanCondition =
-        item?.name?.trim()?.toLowerCase() === "poojan bhatt" ||
-        item?.name?.trim()?.toLowerCase() === "jay motka";
+      const existingRecord = await getSingleItemDynamoDB({
+        TableName: DynamoDBTableNames.TimeSheetDynamoTable,
+        Key: {
+          id: item.id,
+        },
+      });
 
-      console.log("booleanCondition", booleanCondition);
+      console.log("Existing Item", existingRecord);
 
-      if (booleanCondition) {
-        const existingRecord = await getSingleItemDynamoDB({
-          TableName: DynamoDBTableNames.TimeSheetDynamoTable,
-          Key: {
-            id: item.id,
-          },
-        });
+      let finalItem = existingRecord.Item
+        ? {
+            ...existingRecord.Item,
+            ...item,
+          }
+        : item;
 
-        console.log("Existing Item", existingRecord);
+      console.log("Final Item", finalItem);
 
-        let finalItem = existingRecord.Item
-          ? {
-              ...existingRecord.Item,
-              ...item,
-            }
-          : item;
-
-        console.log("Final Item", finalItem);
-
-        await putSingleItemDynamoDB({
-          TableName: DynamoDBTableNames.TimeSheetDynamoTable,
-          Item: unmarshall(
-            marshall(finalItem, { removeUndefinedValues: true })
-          ),
-        });
-      }
+      await putSingleItemDynamoDB({
+        TableName: DynamoDBTableNames.TimeSheetDynamoTable,
+        Item: unmarshall(marshall(finalItem, { removeUndefinedValues: true })),
+      });
     }
   } catch (error) {
     console.error(error);
