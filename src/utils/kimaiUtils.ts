@@ -75,3 +75,62 @@ export const getKimaiRecordStartEndTimeStrings = (
     end: endTime.toISOString().slice(0, -5),
   };
 };
+
+export const deleteTimeSheetRecords = async ({
+  email,
+  authToken,
+  recordId,
+}: {
+  email: string;
+  authToken: string;
+  recordId: string;
+}) => {
+  const response = await fetch(
+    KIMAI_CLOUD_TIMESHEET_ENDPOINT + `/${recordId}`,
+    {
+      headers: {
+        "X-AUTH-USER": email,
+        "X-AUTH-TOKEN": authToken,
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+      method: "DELETE",
+    }
+  );
+
+  if (!response.ok) {
+    const message = `An error has occured: ${response.status}`;
+    throw new Error(message);
+  }
+};
+
+export const getTimeSheetRecords = async ({
+  email,
+  authToken,
+  page = 1,
+}: {
+  email: string;
+  authToken: string;
+  page?: number;
+}): Promise<any> => {
+  const response = await fetch(
+    KIMAI_CLOUD_TIMESHEET_ENDPOINT + `?page=${page}`,
+    {
+      headers: {
+        "X-AUTH-USER": email,
+        "X-AUTH-TOKEN": authToken,
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+      method: "GET",
+    }
+  );
+
+  if (!response.ok) {
+    console.log(response);
+    const message = `An error has occured: ${response.status}`;
+    throw new Error(message);
+  }
+
+  return await response.json();
+};

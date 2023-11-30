@@ -5,6 +5,8 @@ import {
 } from "./timeSheetReport";
 import { syncNotionToDynamo } from "./syncNotionToDynamo";
 import { dynamodbStream } from "./dynamodbStream";
+import { getKimaiEntriesList } from "./getKimaiEntriesList";
+import { deleteKimaiEntries } from "./deleteKimaiEntries";
 
 export const functions = {
   getTimesheetWickesDevs,
@@ -12,4 +14,6 @@ export const functions = {
   syncNotionToDynamo,
   dynamodbStream,
   invokeWickesTimesheetFn,
+  getKimaiEntriesList,
+  deleteKimaiEntries,
 };
