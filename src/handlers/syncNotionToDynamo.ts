@@ -57,11 +57,12 @@ const fetchNotionData = async () => {
           (record) => record.date && record.description && record.customer
         )
         .map((record) => ({
-          name: ddevUser.name,
+          name: ddevUser?.name?.trim(),
           dateTimestamp: `${dayjs(record.date, "YYYY-MM-DD").unix()}`,
           nameDateTimestamp: `${dayjs(record.date, "YYYY-MM-DD").unix()}_${
             ddevUser.name
           }`,
+          updatedAt: dayjs().unix(),
           id: record.rowId,
           ...record,
         }));
